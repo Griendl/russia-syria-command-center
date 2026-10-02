@@ -1,0 +1,17 @@
+{
+  "name": "russia-syria-diplomatic-dashboard",
+  "version": "1.0.0",
+  "description": "Interactive analytical dashboard for Russia-Syria bilateral diplomatic relations and accredited missions.",
+  "scripts": {
+    "start": "npx serve -l 3000 ."
+  },
+  "keywords": [
+    "dashboard",
+    "leaflet",
+    "chartjs",
+    "diplomacy",
+    "visualization"
+  ],
+  "author": "Antigravity Pair Programming",
+  "license": "MIT"
+}

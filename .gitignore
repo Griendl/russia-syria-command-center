@@ -1,0 +1,7 @@
+# Scratch and debug profiles
+scratch/
+*.log
+
+# System files
+.DS_Store
+Thumbs.db

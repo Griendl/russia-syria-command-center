@@ -1,0 +1,3532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"/>
+  <meta name="description" content="Russia · Syria Strategic Axis (September 2026). Tactical 3D Command Center: Sovereign Boundaries, Interactive Time Machine (1944–2026), 11 Strategic Corridors, Accredited Diplomatic Registry, and August 9, 2026 Memorandum."/>
+  <title>Russia · Syria — 3D Command Center (September 2026)</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+
+  <!-- Universal CDN Dependencies for Standalone Single-File Deployment -->
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css"/>
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script>
+    // Offline local fallback if CDN is unreachable
+    if (typeof maplibregl === 'undefined' && typeof document !== 'undefined' && typeof document.createElement === 'function' && document.head) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'vendor/maplibre-gl.css';
+      document.head.appendChild(link);
+      const script = document.createElement('script');
+      script.src = 'vendor/maplibre-gl.js';
+      document.head.appendChild(script);
+    }
+    if (typeof Chart === 'undefined' && typeof document !== 'undefined' && typeof document.createElement === 'function' && document.head) {
+      const script = document.createElement('script');
+      script.src = 'vendor/chart.umd.min.js';
+      document.head.appendChild(script);
+    }
+  </script>
+
+  <style>
+/* ══════════════════════════════════════════════════════════════════════════════
+   MISSION CONTROL / COMMAND CENTER DESIGN SYSTEM (ANTI-SLOP ENGINE)
+   High-Contrast Legibility · Zero Specular Glare · Precision Ergonomics
+   ══════════════════════════════════════════════════════════════════════════════ */
+:root {
+  --bg-deep: #030611;
+  --bg-space: #050917;
+  --surface: #0a1124;
+  --surface-glass: rgba(10, 17, 36, 0.92);
+  --surface-hover: rgba(255, 255, 255, 0.08);
+  
+  --border: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.24);
+  --border-active: rgba(56, 189, 248, 0.65);
+  
+  --t1: #ffffff;
+  --t2: #cbd5e1;
+  --t3: #94a3b8;
+  
+  --blue: #38bdf8;
+  --blue-dim: rgba(56, 189, 248, 0.15);
+  --blue-glow: rgba(56, 189, 248, 0.4);
+  
+  --green: #34d399;
+  --green-dim: rgba(52, 211, 153, 0.15);
+  --green-glow: rgba(52, 211, 153, 0.4);
+  
+  --amber: #fbbf24;
+  --amber-dim: rgba(251, 191, 36, 0.15);
+  
+  --red: #f87171;
+  --red-dim: rgba(248, 113, 113, 0.15);
+  
+  --violet: #c084fc;
+  --violet-dim: rgba(192, 132, 252, 0.15);
+
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  background: var(--bg-deep);
+  color: var(--t1);
+  font-family: var(--font);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+}
+
+/* ═══ 3D Full-Bleed WebGL Canvas ═══ */
+#globe-canvas-wrap {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  cursor: grab;
+}
+#globe-canvas-wrap:active {
+  cursor: grabbing;
+}
+
+/* ═══ Mobile Backdrop Overlay for Drawers ═══ */
+#hud-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 6, 17, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 38;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+#hud-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ═══ Mobile Orientation Advisor (Landscape Recommendation) ═══ */
+.orientation-advisor {
+  position: fixed;
+  top: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  background: rgba(10, 17, 36, 0.95);
+  border: 1px solid rgba(56, 189, 248, 0.5);
+  border-radius: 999px;
+  padding: 6px 14px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8);
+  display: none;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.76rem;
+  color: var(--t2);
+  white-space: nowrap;
+  animation: fadeInDown 0.4s ease;
+}
+.orientation-advisor.visible {
+  display: flex;
+}
+.oa-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.oa-content svg {
+  color: var(--blue);
+  flex-shrink: 0;
+}
+.oa-content strong {
+  color: #fff;
+}
+.oa-close {
+  background: transparent;
+  border: none;
+  color: var(--t3);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0 4px;
+}
+.oa-close:hover {
+  color: #fff;
+}
+@media (orientation: landscape) {
+  .orientation-advisor {
+    display: none !important;
+  }
+}
+
+/* ═══ Top Executive Command Bar ═══ */
+.top-deck-bar {
+  position: fixed;
+  top: 12px;
+  left: 16px;
+  right: 16px;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--surface-glass);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.5rem 1.2rem;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.85);
+  pointer-events: auto;
+}
+.brand-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--t1);
+  letter-spacing: -0.01em;
+  flex-shrink: 0;
+}
+.brand-flags {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.brand-flags img {
+  border-radius: 3px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+.brand-sep { color: var(--t3); font-weight: 300; }
+.status-beacon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #34d399;
+  background: var(--green-dim);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  padding: 3px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 8px #34d399;
+  animation: pulseBeacon 2s infinite;
+}
+@keyframes pulseBeacon {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 12px #34d399; }
+  100% { transform: scale(0.9); opacity: 0.8; }
+}
+
+/* Center Camera Quick Presets - Independent Smooth Horizontal Scroll Track */
+.camera-quick-presets {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding: 2px 4px;
+  min-width: 0;
+  flex: 1 1 auto;
+  scroll-behavior: smooth;
+}
+.camera-quick-presets::-webkit-scrollbar {
+  display: none;
+}
+.cpreset-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--t2);
+  font-family: var(--font);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s var(--ease-out);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.cpreset-btn:hover, .cpreset-btn.active {
+  background: rgba(56, 189, 248, 0.18);
+  border-color: rgba(56, 189, 248, 0.5);
+  color: #fff;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.3);
+}
+.cpreset-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+/* Top Action Controls */
+.top-action-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.action-icon-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--t2);
+  font-family: var(--font);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.action-icon-btn:hover, .action-icon-btn.active {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.28);
+}
+#btn-toggle-proj, #btn-clean-toggle {
+  min-width: 96px;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Basemap Switcher Pill */
+.basemap-pill-toggle {
+  display: inline-flex;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  padding: 2px;
+}
+.bmp-btn {
+  background: transparent;
+  border: none;
+  color: var(--t3);
+  font-family: var(--font);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.bmp-btn:hover { color: #fff; }
+.bmp-btn.active {
+  background: var(--blue);
+  color: #030611;
+  font-weight: 700;
+}
+
+/* ═══ Floating Cinematic Epoch Time-Machine Banner ═══ */
+.epoch-floating-card {
+  position: fixed;
+  top: 68px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 48;
+  background: rgba(6, 11, 24, 0.94);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1.4rem;
+  max-width: 720px;
+  width: min(720px, 92vw);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  animation: bannerSlideIn 0.35s var(--ease-out);
+  pointer-events: auto;
+}
+@keyframes bannerSlideIn {
+  from { opacity: 0; transform: translate(-50%, -10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+.efc-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.efc-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.efc-year-tag {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #38bdf8;
+  background: var(--blue-dim);
+  padding: 2px 7px;
+  border-radius: 5px;
+}
+.efc-loc-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--t2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.efc-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #fff;
+}
+.efc-quote {
+  font-size: 0.8rem;
+  color: var(--t2);
+  line-height: 1.35;
+  margin-top: 2px;
+}
+.efc-action-btn {
+  background: var(--blue-dim);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: #38bdf8;
+  font-family: var(--font);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+.efc-action-btn:hover {
+  background: var(--blue);
+  color: #030611;
+  border-color: var(--blue);
+}
+
+/* ═══ Floating HUD Wings (Left & Right Frosted Glass Wings) ═══ */
+.hud-wing {
+  position: fixed;
+  top: 72px;
+  bottom: 84px;
+  width: 430px;
+  z-index: 40;
+  background: var(--surface-glass);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.95);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  pointer-events: auto;
+  transition: transform 0.35s var(--ease-out), opacity 0.35s var(--ease-out);
+}
+.hud-left {
+  left: 20px;
+}
+.hud-right {
+  right: 20px;
+}
+.hud-left.closed {
+  transform: translateX(-470px);
+  opacity: 0;
+  pointer-events: none;
+}
+.hud-right.closed {
+  transform: translateX(470px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Native Swipe Handle Pill for Touch Drawers */
+.drawer-swipe-handle {
+  width: 100%;
+  padding: 8px 0 4px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: grab;
+  touch-action: none;
+  flex-shrink: 0;
+}
+.swipe-pill {
+  width: 44px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+  transition: background 0.2s ease, width 0.2s ease;
+}
+.drawer-swipe-handle:active .swipe-pill {
+  background: var(--blue);
+  width: 52px;
+}
+
+.wing-top-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.1rem;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+  flex-shrink: 0;
+}
+.wth-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--t1);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.wth-title svg { color: var(--blue); }
+.wth-close-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: var(--t2);
+  font-family: var(--font);
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 999px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+}
+.wth-close-btn:hover, .wth-close-btn:active {
+  background: rgba(248, 113, 113, 0.25);
+  border-color: rgba(248, 113, 113, 0.6);
+  color: #fff;
+  transform: scale(0.97);
+}
+
+.wing-tabs-header {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.wing-tabs-header::-webkit-scrollbar { display: none; }
+.wtab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--t3);
+  font-family: var(--font);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 8px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+.wtab-btn:hover { color: var(--t2); }
+.wtab-btn.active {
+  color: #fff;
+  border-bottom-color: var(--blue);
+  background: rgba(56, 189, 248, 0.06);
+}
+
+.wing-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1.1rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.15) transparent;
+}
+.wing-body::-webkit-scrollbar { width: 5px; }
+.wing-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 999px; }
+
+.tab-pane { display: none; }
+.tab-pane.active { display: block; animation: fadeIn 0.25s ease; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Dossier Components */
+.dossier-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.dossier-cat-badge {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--blue);
+  background: var(--blue-dim);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+.dossier-coords {
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  color: var(--t3);
+}
+.dossier-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.25;
+  margin-bottom: 3px;
+}
+.dossier-sub {
+  font-size: 0.8rem;
+  color: var(--t2);
+  margin-bottom: 8px;
+}
+.dossier-badge-lg {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #34d399;
+  background: var(--green-dim);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 0.9rem;
+  line-height: 1.35;
+}
+.dossier-desc {
+  font-size: 0.82rem;
+  color: var(--t2);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+/* Tactical Units Box */
+.tub-container {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 0.9rem;
+}
+.tub-header {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--t3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+.tub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 6px;
+}
+.tub-item {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 5px 7px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  transition: all 0.2s ease;
+}
+.tub-item:hover {
+  background: rgba(56, 189, 248, 0.12);
+  border-color: rgba(56, 189, 248, 0.4);
+}
+.tub-glyph {
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+.tub-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tub-code {
+  font-family: var(--mono);
+  font-weight: 700;
+  color: #fff;
+  font-size: 0.72rem;
+}
+.tub-role {
+  font-size: 0.68rem;
+  color: var(--t3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Specs Table */
+.dossier-specs-table {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.9rem;
+}
+.dst-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.78rem;
+}
+.dst-row:last-child { border-bottom: none; }
+.dst-key { color: var(--t3); font-weight: 600; width: 35%; flex-shrink: 0; }
+.dst-val { color: var(--t1); font-weight: 500; width: 65%; text-align: right; }
+
+/* Jump Grid */
+.dossier-jump-grid {
+  margin-top: 0.8rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.dj-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--t3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+.dj-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+.dj-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--t2);
+  font-family: var(--font);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+.dj-btn:hover, .dj-btn.active {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: rgba(56, 189, 248, 0.45);
+  color: #fff;
+}
+
+/* Strategic Corridors Filter Pills */
+.corridor-filter-bar {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 0.8rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.corridor-filter-bar::-webkit-scrollbar { display: none; }
+.cf-pill {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--t3);
+  font-family: var(--font);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+.cf-pill:hover, .cf-pill.active {
+  background: var(--blue-dim);
+  border-color: var(--blue);
+  color: #fff;
+}
+
+/* Corridor Cards List */
+.corridor-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid var(--blue);
+  border-radius: 6px;
+  padding: 0.65rem 0.85rem;
+  margin-bottom: 0.65rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.corridor-card:hover, .corridor-card.active {
+  background: rgba(56, 189, 248, 0.1);
+  border-color: rgba(56, 189, 248, 0.5);
+  transform: translateX(3px);
+}
+.cc-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 3px;
+}
+.cc-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #fff;
+}
+.cc-dist {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--blue);
+  font-weight: 700;
+}
+.cc-route {
+  font-size: 0.74rem;
+  color: var(--t3);
+  margin-bottom: 4px;
+}
+.cc-throughput {
+  font-size: 0.72rem;
+  color: #34d399;
+  font-weight: 600;
+}
+
+/* Staff Roster */
+.staff-filter-bar {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 0.8rem;
+}
+.sfb-btn {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--t3);
+  font-family: var(--font);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 5px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+.sfb-btn:hover, .sfb-btn.active {
+  background: var(--blue-dim);
+  border-color: var(--blue);
+  color: #fff;
+}
+.staff-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.si-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #fff;
+}
+.si-role {
+  font-size: 0.72rem;
+  color: var(--t3);
+  margin-top: 1px;
+}
+.si-badge {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+/* Donut & Polar Charts */
+.chart-box {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 0.8rem;
+  margin-bottom: 0.9rem;
+  position: relative;
+  height: 210px;
+}
+
+/* Historical Epoch Cards */
+.epoch-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem;
+  margin-bottom: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.epoch-card:hover, .epoch-card.active {
+  background: rgba(56, 189, 248, 0.08);
+  border-color: rgba(56, 189, 248, 0.4);
+}
+.ec-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+.ec-year {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--blue);
+  background: var(--blue-dim);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+.ec-place {
+  font-size: 0.72rem;
+  color: var(--t3);
+  text-transform: uppercase;
+}
+.ec-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.ec-doc {
+  font-size: 0.74rem;
+  color: #fbbf24;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.ec-text {
+  font-size: 0.78rem;
+  color: var(--t2);
+  line-height: 1.4;
+}
+
+/* ═══ Map Tactical Markers (Pixel-Perfect Zero-Dimension Anchor Pins) ═══ */
+.tactical-pin {
+  width: 0;
+  height: 0;
+  position: relative;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.tp-dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tp-core {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(10, 17, 36, 0.95);
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.9);
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
+}
+.tactical-pin:hover .tp-core, .tactical-pin.active .tp-core {
+  transform: scale(1.3);
+  box-shadow: 0 0 18px currentColor;
+}
+.tp-svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tp-label-wrap {
+  position: absolute;
+  pointer-events: none;
+  white-space: nowrap;
+  opacity: 0.92;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.tactical-pin:hover .tp-label-wrap, .tactical-pin.active .tp-label-wrap {
+  opacity: 1;
+}
+.tp-label-wrap.dir-east {
+  top: 0;
+  left: 16px;
+  transform: translateY(-50%);
+}
+.tp-label-wrap.dir-west {
+  top: 0;
+  right: 16px;
+  transform: translateY(-50%);
+  text-align: right;
+}
+.tp-label {
+  background: rgba(6, 11, 24, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 3px 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.tp-tag {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  margin-bottom: 1px;
+}
+.tp-name {
+  display: block;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* ═══ Bottom Chronology Dock (Interactive Time-Machine Scrubber) ═══ */
+.bottom-chronology-dock {
+  position: fixed;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 45;
+  background: var(--surface-glass);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.4rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.85);
+  pointer-events: auto;
+}
+.bcd-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--t3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+.epoch-track {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.epoch-step-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--t2);
+  font-family: var(--font);
+  padding: 5px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s var(--ease-out);
+  white-space: nowrap;
+}
+.epoch-step-btn:hover, .epoch-step-btn.active {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: var(--blue);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+}
+.step-year {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+.step-name {
+  font-size: 0.72rem;
+  color: var(--t3);
+}
+.epoch-step-btn.active .step-name { color: #cbd5e1; }
+
+/* Mobile Action Bar */
+.mobile-action-bar {
+  display: none;
+}
+
+/* Authorship & Attribution Badge (Bottom-Left Corner) */
+.sovereignty-badge {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  z-index: 30;
+  font-size: 0.72rem;
+  color: var(--t2);
+  background: rgba(10, 17, 36, 0.90);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  padding: 5px 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.65);
+  pointer-events: auto;
+  user-select: text;
+  transition: all 0.25s ease;
+}
+.sovereignty-badge:hover {
+  background: rgba(10, 17, 36, 0.98);
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.8), 0 0 14px rgba(56, 189, 248, 0.25);
+}
+.sovereignty-badge .ac-author {
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.01em;
+}
+.sovereignty-badge .ac-full {
+  display: inline;
+}
+.sovereignty-badge .ac-short {
+  display: none;
+}
+.sovereignty-badge .ac-sep {
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 0.7rem;
+}
+.sovereignty-badge .ac-group {
+  color: var(--blue);
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 0.72rem;
+}
+.sovereignty-badge .ac-univ {
+  color: var(--t1);
+  font-weight: 600;
+}
+.sovereignty-badge .ac-email {
+  color: #38bdf8;
+  text-decoration: none;
+  font-family: var(--mono);
+  font-size: 0.71rem;
+  transition: color 0.15s ease, text-shadow 0.15s ease;
+}
+.sovereignty-badge .ac-email:hover {
+  color: #7dd3fc;
+  text-decoration: underline;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   MOBILE & TABLET RESPONSIVENESS (ANTI-SLOP POCKET COMMAND CENTER)
+   ══════════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .top-deck-bar {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    padding: 0.4rem 0.6rem 0.35rem 0.6rem;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+    border-radius: var(--radius-md);
+  }
+  .brand-group {
+    font-size: 0.8rem;
+    gap: 6px;
+    flex: 1 1 auto;
+  }
+  .status-beacon {
+    display: none;
+  }
+  .top-action-controls {
+    flex-shrink: 0;
+    gap: 4px;
+  }
+  .camera-quick-presets {
+    width: 100%;
+    order: 3;
+    gap: 4px;
+    padding: 3px 0 1px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    margin-top: 2px;
+    flex: 1 1 100%;
+  }
+  .cpreset-btn {
+    font-size: 0.72rem;
+    padding: 4px 8px;
+    gap: 4px;
+  }
+  .bmp-btn {
+    font-size: 0.68rem;
+    padding: 3px 6px;
+  }
+  #btn-toggle-left, #btn-toggle-right {
+    display: none; /* Accessible via bottom mobile-action-bar */
+  }
+  #btn-clean-toggle span, #btn-toggle-proj span {
+    display: none;
+  }
+  #btn-clean-toggle, #btn-toggle-proj {
+    min-width: 28px;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+  
+  .hud-wing {
+    top: auto;
+    bottom: 74px;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    max-width: 460px;
+    margin: 0 auto;
+    max-height: 60vh;
+    border-radius: var(--radius-md);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.95);
+    transform: translateY(140%) !important;
+    pointer-events: none;
+    opacity: 0;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  }
+  .hud-wing.mobile-open {
+    transform: translateY(0) !important;
+    pointer-events: auto;
+    opacity: 1;
+  }
+  .hud-left.closed, .hud-right.closed {
+    transform: translateY(140%) !important;
+    pointer-events: none;
+    opacity: 0;
+  }
+  .mobile-action-bar {
+    position: fixed;
+    bottom: 52px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 35;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mab-btn {
+    background: rgba(10, 17, 36, 0.92);
+    border: 1px solid rgba(56, 189, 248, 0.45);
+    color: #fff;
+    font-family: var(--font);
+    font-size: 0.74rem;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 999px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s ease;
+  }
+  .mab-btn:active {
+    background: rgba(56, 189, 248, 0.25);
+    border-color: rgba(56, 189, 248, 0.8);
+    transform: scale(0.96);
+  }
+  .mab-btn svg {
+    color: var(--blue);
+  }
+  .bottom-chronology-dock {
+    bottom: 8px;
+    padding: 4px 8px;
+    gap: 5px;
+    max-width: calc(100vw - 16px);
+    overflow-x: auto;
+  }
+  .bcd-label {
+    display: none;
+  }
+  .epoch-step-btn {
+    padding: 5px 10px;
+    font-size: 0.72rem;
+  }
+  .sovereignty-badge {
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.65rem;
+    padding: 3px 9px;
+    gap: 5px;
+    max-width: calc(100vw - 20px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-flex;
+  }
+}
+@media (max-width: 520px) {
+  .sovereignty-badge .ac-full { display: none; }
+  .sovereignty-badge .ac-short { display: inline; }
+}
+
+/* ═══ Clean 3D / Zen Mode: 100% Pure Panoramic Map View ═══ */
+body.clean-3d-active .top-deck-bar {
+  transform: translateY(-160%) !important;
+  pointer-events: none !important;
+}
+body.clean-3d-active .bottom-chronology-dock {
+  transform: translateY(160%) !important;
+  pointer-events: none !important;
+}
+body.clean-3d-active .mobile-action-bar {
+  transform: translateY(160%) !important;
+  pointer-events: none !important;
+}
+body.clean-3d-active #hud-wing-left,
+body.clean-3d-active #hud-wing-right {
+  transform: translateY(160%) !important;
+  pointer-events: none !important;
+}
+body.clean-3d-active #hud-backdrop {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+body.clean-3d-active .orientation-advisor {
+  display: none !important;
+}
+body.clean-3d-active .sovereignty-badge {
+  transform: translateY(160%) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Floating Restore HUD Pill (Visible only in Clean 3D / Pure Map Mode) */
+.restore-hud-pill {
+  position: fixed;
+  top: 10px;
+  right: 12px;
+  z-index: 100;
+  display: none;
+  background: rgba(10, 17, 36, 0.94);
+  border: 1px solid rgba(56, 189, 248, 0.65);
+  color: #fff;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-family: var(--font);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.85), 0 0 14px rgba(56, 189, 248, 0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+}
+.restore-hud-pill:hover, .restore-hud-pill:active {
+  background: rgba(56, 189, 248, 0.25);
+  border-color: #38bdf8;
+  transform: scale(1.04);
+}
+body.clean-3d-active .restore-hud-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  animation: fadeInDown 0.3s ease;
+}
+
+/* Smartphone Landscape Mode (e.g. rotated phone, max-height 550px) */
+@media (orientation: landscape) and (max-height: 550px) {
+  .top-deck-bar {
+    top: 5px !important;
+    left: 8px !important;
+    right: 8px !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: 0 8px !important;
+    gap: 6px !important;
+    flex-wrap: nowrap !important;
+    border-radius: 999px !important;
+  }
+  .brand-group {
+    font-size: 0.76rem !important;
+    gap: 5px !important;
+    flex: 0 0 auto !important;
+  }
+  .brand-flags img {
+    width: 16px !important;
+    height: 11px !important;
+  }
+  .status-beacon {
+    display: none !important;
+  }
+  .camera-quick-presets {
+    width: auto !important;
+    order: 2 !important;
+    flex: 1 1 auto !important;
+    border-top: none !important;
+    margin-top: 0 !important;
+    padding: 0 !important;
+    gap: 3px !important;
+  }
+  .cpreset-btn {
+    font-size: 0.68rem !important;
+    padding: 2px 7px !important;
+    height: 24px !important;
+    gap: 4px !important;
+  }
+  .top-action-controls {
+    gap: 3px !important;
+    flex-shrink: 0 !important;
+  }
+  .basemap-pill-toggle {
+    height: 24px !important;
+    padding: 2px !important;
+  }
+  .bmp-btn {
+    font-size: 0.62rem !important;
+    padding: 1px 5px !important;
+    height: 20px !important;
+  }
+  .action-icon-btn {
+    height: 24px !important;
+    padding: 0 6px !important;
+    font-size: 0.66rem !important;
+  }
+  .bottom-chronology-dock {
+    bottom: 4px !important;
+    height: 30px !important;
+    padding: 1px 6px !important;
+    gap: 3px !important;
+    max-width: calc(100vw - 16px) !important;
+  }
+  .epoch-step-btn {
+    height: 24px !important;
+    padding: 1px 7px !important;
+    font-size: 0.66rem !important;
+  }
+  .mobile-action-bar {
+    display: none !important;
+  }
+  .sovereignty-badge {
+    bottom: 6px !important;
+    left: 8px !important;
+    transform: none !important;
+    font-size: 0.62rem !important;
+    padding: 2px 7px !important;
+    max-width: calc(50vw - 180px) !important;
+  }
+  
+  /* Expansive Landscape Tactical Modal Sheet (Full-height focused view) */
+  .hud-wing {
+    top: 6px !important;
+    bottom: 6px !important;
+    left: 8px !important;
+    right: auto !important;
+    width: min(520px, calc(100vw - 16px)) !important;
+    max-width: calc(100vw - 16px) !important;
+    height: auto !important;
+    max-height: calc(100vh - 12px) !important;
+    z-index: 80 !important;
+    border-radius: var(--radius-md) !important;
+    background: rgba(8, 14, 30, 0.97) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(56, 189, 248, 0.35) !important;
+    transform: translateX(-120%) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease !important;
+  }
+  .hud-wing.mobile-open, .hud-wing:not(.closed) {
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+  .hud-right {
+    left: auto !important;
+    right: 8px !important;
+    transform: translateX(120%) !important;
+  }
+  .hud-right.mobile-open, .hud-right:not(.closed) {
+    transform: translateX(0) !important;
+  }
+  .epoch-floating-card {
+    top: 42px !important;
+    padding: 0.4rem 0.8rem !important;
+  }
+}
+  </style>
+</head>
+<body>
+
+<!-- ═══ 3D FULL-BLEED WEBGL CANVAS ═══ -->
+<div id="globe-canvas-wrap" aria-label="Tactical 3D Interactive Map"></div>
+
+<!-- ═══ MOBILE BACKDROP OVERLAY ═══ -->
+<div id="hud-backdrop" onclick="closeAllWings()"></div>
+
+<!-- ═══ FLOATING RESTORE HUD PILL (ACTIVE IN PURE MAP MODE) ═══ -->
+<button id="btn-restore-hud" class="restore-hud-pill" onclick="toggleClean3DMode()" title="Restore Command Center HUD">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+  <span>Restore HUD</span>
+</button>
+
+<!-- ═══ MOBILE ORIENTATION ADVISOR BANNER ═══ -->
+<div id="orientation-advisor" class="orientation-advisor" role="alert">
+  <div class="oa-content">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M12 18h.01"/><path d="M19 8l3-3-3-3"/><path d="M22 5h-7"/></svg>
+    <span><strong>Tip:</strong> Rotate phone to Landscape for wide tactical panoramic view</span>
+  </div>
+  <button class="oa-close" onclick="dismissOrientationAdvisor()" title="Dismiss">✕</button>
+</div>
+
+<!-- ═══ TOP EXECUTIVE COMMAND DECK ═══ -->
+<header class="top-deck-bar" role="banner">
+  <!-- Brand Group -->
+  <div class="brand-group">
+    <div class="brand-flags" title="Russia & Syria Sovereign Strategic Partnership">
+      <img src="https://flagcdn.com/w40/ru.png" width="20" height="14" alt="Russia"/>
+      <span class="brand-sep">·</span>
+      <img src="https://flagcdn.com/w40/sy.png" width="20" height="14" alt="Syria"/>
+    </div>
+    <span class="brand-text">Russia · Syria</span>
+    <div class="status-beacon" title="All 11 strategic vectors operating normally">
+      <span class="pulse-dot"></span>
+      <span>STRATEGIC AXIS 2026</span>
+    </div>
+  </div>
+
+  <!-- Center Camera Quick Presets - Independent Horizontal Track -->
+  <div class="camera-quick-presets" role="toolbar" aria-label="Quick Tactical Views">
+    <button class="cpreset-btn" id="cp-axis" onclick="flyToStrategicPreset('axis', this)" title="Panoramic view of the Russian-Syrian geopolitical axis">
+      <span class="cpreset-dot" style="background:#38bdf8;"></span>
+      <span>Overview</span>
+    </button>
+    <button class="cpreset-btn" id="cp-corridors" onclick="showAllCorridors(this)" title="View all 11 strategic air, sea, and transit corridors">
+      <span class="cpreset-dot" style="background:#10b981;"></span>
+      <span>Corridors</span>
+    </button>
+    <button class="cpreset-btn" id="cp-damascus" onclick="selectStrategicTarget('damascus', this)" title="Russian Embassy in Damascus">
+      <span class="cpreset-dot" style="background:#c084fc;"></span>
+      <span>Damascus</span>
+    </button>
+    <button class="cpreset-btn active" id="cp-tartus" onclick="selectStrategicTarget('tartus', this)" title="Naval Training Center (720th Logistics Point)">
+      <span class="cpreset-dot" style="background:#38bdf8;"></span>
+      <span>Tartus (Naval)</span>
+    </button>
+    <button class="cpreset-btn" id="cp-khmeimim" onclick="selectStrategicTarget('khmeimim', this)" title="Khmeimim Aerospace Training Center">
+      <span class="cpreset-dot" style="background:#f87171;"></span>
+      <span>Khmeimim (Air)</span>
+    </button>
+    <button class="cpreset-btn" id="cp-baniyas" onclick="selectStrategicTarget('baniyas', this)" title="Baniyas Marine Oil Terminal & Refinery">
+      <span class="cpreset-dot" style="background:#10b981;"></span>
+      <span>Baniyas (Oil)</span>
+    </button>
+    <button class="cpreset-btn" id="cp-latakia" onclick="selectStrategicTarget('latakia', this)" title="Port of Latakia (Grain Express)">
+      <span class="cpreset-dot" style="background:#34d399;"></span>
+      <span>Latakia (Grain)</span>
+    </button>
+    <button class="cpreset-btn" id="cp-novorossiysk" onclick="selectStrategicTarget('novorossiysk', this)" title="Port of Novorossiysk (Crude & Grain)">
+      <span class="cpreset-dot" style="background:#fbbf24;"></span>
+      <span>Novorossiysk</span>
+    </button>
+    <button class="cpreset-btn" id="cp-sahel" onclick="selectStrategicTarget('sahel_hub', this)" title="Sahel Central Base (Mali & Africa Corps)">
+      <span class="cpreset-dot" style="background:#ea580c;"></span>
+      <span>Sahel (Africa)</span>
+    </button>
+  </div>
+
+  <!-- Top Action Controls -->
+  <div class="top-action-controls">
+    <!-- Basemap Switcher -->
+    <div class="basemap-pill-toggle">
+      <button class="bmp-btn active" id="btn-bmp-dark" onclick="setBasemapStyle('dark', this)" title="High-contrast NOC dark map">Dark NOC</button>
+      <button class="bmp-btn" id="btn-bmp-sat" onclick="setBasemapStyle('satellite', this)" title="High-resolution satellite reconnaissance">Satellite 3D</button>
+      <button class="bmp-btn" id="btn-bmp-str" onclick="setBasemapStyle('streets', this)" title="Detailed topography and road network">Streets</button>
+    </div>
+
+    <!-- 3D vs 2D Perspective Toggle -->
+    <button class="action-icon-btn active" id="btn-toggle-proj" onclick="toggle3DPerspective(this)" title="Toggle 3D View / 2D Map">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      <span id="txt-proj-toggle">3D View</span>
+    </button>
+
+    <button class="action-icon-btn" id="btn-toggle-left" onclick="toggleWing('left')" title="Show / hide target dossier">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+      <span>Dossier</span>
+    </button>
+    <button class="action-icon-btn" id="btn-toggle-right" onclick="toggleWing('right')" title="Show / hide strategy and corridors">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+      <span>Strategy</span>
+    </button>
+    <button class="action-icon-btn" id="btn-clean-toggle" onclick="toggleClean3DMode(this)" title="Toggle pure panoramic map mode (Hide / Restore HUD)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      <span id="txt-clean-toggle">Pure Map</span>
+    </button>
+    <button class="action-icon-btn" id="btn-fullscreen-toggle" onclick="toggleBrowserFullscreen()" title="Native Fullscreen (Hides mobile browser address bar and tabs)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+      <span id="txt-fullscreen-toggle">Fullscreen</span>
+    </button>
+  </div>
+</header>
+
+<!-- ═══ LEFT FLOATING HUD WING (TARGET DOSSIER · HISTORICAL CHRONICLE) ═══ -->
+<aside class="hud-wing hud-left" id="hud-wing-left" aria-label="Operational Target Dossier">
+  <div class="drawer-swipe-handle" id="swipe-handle-left" aria-hidden="true">
+    <div class="swipe-pill"></div>
+  </div>
+  <div class="wing-top-header">
+    <div class="wth-title">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>Operational Target Dossier</span>
+    </div>
+    <button class="wth-close-btn" onclick="closeWing('left')" title="Close and return to map">✕ <span>Back to Map</span></button>
+  </div>
+
+  <!-- Tabs Header -->
+  <div class="wing-tabs-header" role="tablist">
+    <button class="wtab-btn active" id="tab-l-dossier" onclick="switchLeftTab('dossier', this)" role="tab">Target Dossier</button>
+    <button class="wtab-btn" id="tab-l-chronicle" onclick="switchLeftTab('chronicle', this)" role="tab">Historical Epoch</button>
+  </div>
+
+  <div class="wing-body">
+    <!-- PANE 1: ACTIVE TARGET DOSSIER -->
+    <div class="tab-pane active" id="pane-l-dossier" role="tabpanel">
+      <div id="target-dossier-card">
+        <div class="dossier-header-row">
+          <span class="dossier-cat-badge" id="dossier-cat">NAVAL TRAINING HUB</span>
+          <span class="dossier-coords" id="dossier-coords">34.90° N, 35.88° E</span>
+        </div>
+        <div class="dossier-title" id="dossier-title">Naval Training Center (720th Logistics Point)</div>
+        <div class="dossier-sub" id="dossier-sub">Tartus, Syria · Mediterranean Naval Facility</div>
+        <div class="dossier-badge-lg" id="dossier-badge">MOU August 9, 2026 · Joint Training Center</div>
+
+        <!-- DYNAMIC TACTICAL UNITS (VISUAL GLYPHS GRID) -->
+        <div id="dossier-units-box" class="tub-container" style="display:none;"></div>
+
+        <!-- COMPACT SPECS MATRIX -->
+        <div id="dossier-specs-box" class="dossier-specs-table" style="display:none;"></div>
+
+        <div class="dossier-desc" id="dossier-desc">
+          Under the August 9, 2026 Memorandum, Tartus is reorganized into a joint naval training center. Russia maintains the 720th Logistics Support Point and repair floating workshop; Berth #4 is transferred to Syrian civil administration.
+        </div>
+
+        <div class="dossier-jump-grid">
+          <div class="dj-label">Quick Strategic Target Jump:</div>
+          <div class="dj-buttons">
+            <button class="dj-btn active" id="dj-tartus" onclick="selectStrategicTarget('tartus')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="3"/><line x1="12" y1="8" x2="12" y2="21"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/><path d="M9 18l3 3 3-3"/></svg>
+              <span>Tartus (Naval)</span>
+            </button>
+            <button class="dj-btn" id="dj-khmeimim" onclick="selectStrategicTarget('khmeimim')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L9 9H2l7 5-3 8 6-4 6 4-3-8 7-5h-7z"/></svg>
+              <span>Khmeimim (Air)</span>
+            </button>
+            <button class="dj-btn" id="dj-damascus" onclick="selectStrategicTarget('damascus')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 10h18M5 10v11M9 10v11M15 10v11M19 10v11M12 2L2 7h20L12 2z"/></svg>
+              <span>Damascus</span>
+            </button>
+            <button class="dj-btn" id="dj-baniyas" onclick="selectStrategicTarget('baniyas')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg>
+              <span>Baniyas (Oil)</span>
+            </button>
+            <button class="dj-btn" id="dj-latakia" onclick="selectStrategicTarget('latakia')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 17l2 3h16l2-3-4-8H6z"/><path d="M8 9V4h8v5"/><path d="M12 4v5"/></svg>
+              <span>Latakia (Grain)</span>
+            </button>
+            <button class="dj-btn" id="dj-novorossiysk" onclick="selectStrategicTarget('novorossiysk')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+              <span>Novorossiysk</span>
+            </button>
+            <button class="dj-btn" id="dj-moscow" onclick="flyToStrategicPreset('moscow')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <span>Moscow (Capital)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANE 2: HISTORICAL CHRONICLE -->
+    <div class="tab-pane" id="pane-l-chronicle" role="tabpanel">
+      <div id="archival-chronicle-box">
+        <div class="dossier-header-row">
+          <span class="dossier-cat-badge" id="arch-year-badge">1944 EPOCH</span>
+          <span class="dossier-coords" id="arch-place">DAMASCUS, SYRIA</span>
+        </div>
+        <div class="dossier-title" id="arch-title">Diplomatic Recognition of Syrian Independence</div>
+        <div class="dossier-badge-lg" id="arch-doc" style="color:#fbbf24; background:var(--amber-dim); border-color:rgba(251,191,36,0.35);">
+          Note of USSR People's Commissariat of Foreign Affairs, July 21, 1944
+        </div>
+        <div class="dossier-desc" id="arch-text">
+          On July 21, 1944, the USSR became the first major global power to recognize the full independence of the Syrian Republic, establishing the foundation of a strategic alliance.
+        </div>
+        <div class="dossier-specs-table" id="arch-highlights-box">
+          <div class="dst-row"><span class="dst-key">Legal Status:</span><span class="dst-val">Unconditional recognition prior to expiration of mandate.</span></div>
+          <div class="dst-row"><span class="dst-key">Signatories:</span><span class="dst-val">V.M. Molotov (USSR) · Jamil Mardam-Bey (Syrian Foreign Minister).</span></div>
+          <div class="dst-row"><span class="dst-key">Outcome:</span><span class="dst-val">Establishment of permanent Soviet diplomatic mission in Damascus.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══ RIGHT FLOATING HUD WING (STRATEGY · CORRIDORS · ACCORD) ═══ -->
+<aside class="hud-wing hud-right" id="hud-wing-right" aria-label="Strategic Analysis and Accord">
+  <div class="drawer-swipe-handle" id="swipe-handle-right" aria-hidden="true">
+    <div class="swipe-pill"></div>
+  </div>
+  <div class="wing-top-header">
+    <div class="wth-title">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+      <span>Strategic Balance & Accord</span>
+    </div>
+    <button class="wth-close-btn" onclick="closeWing('right')" title="Close and return to map">✕ <span>Back to Map</span></button>
+  </div>
+
+  <!-- Tabs Header -->
+  <div class="wing-tabs-header" role="tablist">
+    <button class="wtab-btn active" id="tab-r-corridors" onclick="switchRightTab('corridors', this)" role="tab">Corridors</button>
+    <button class="wtab-btn" id="tab-r-mou" onclick="switchRightTab('mou', this)" role="tab">2026 Accord</button>
+    <button class="wtab-btn" id="tab-r-staff" onclick="switchRightTab('staff', this)" role="tab">Diplomats</button>
+    <button class="wtab-btn" id="tab-r-energy" onclick="switchRightTab('energy', this)" role="tab">Energy</button>
+    <button class="wtab-btn" id="tab-r-polar" onclick="switchRightTab('polar', this)" role="tab">Balance</button>
+    <button class="wtab-btn" id="tab-r-concl" onclick="switchRightTab('concl', this)" role="tab">Conclusion</button>
+  </div>
+
+  <div class="wing-body">
+    <!-- PANE 1: 11 STRATEGIC CORRIDORS -->
+    <div class="tab-pane active" id="pane-r-corridors" role="tabpanel">
+      <div class="corridor-filter-bar">
+        <button class="cf-pill active" onclick="filterCorridorsUI('all', this)">All (11)</button>
+        <button class="cf-pill" onclick="filterCorridorsUI('air', this)">Air Bridges</button>
+        <button class="cf-pill" onclick="filterCorridorsUI('sea', this)">Maritime</button>
+        <button class="cf-pill" onclick="filterCorridorsUI('tactical', this)">Coastal Defense</button>
+        <button class="cf-pill" onclick="filterCorridorsUI('transit', this)">African Axis</button>
+      </div>
+      <div id="corridors-list-box"></div>
+    </div>
+
+    <!-- PANE 2: AUGUST 9, 2026 MEMORANDUM -->
+    <div class="tab-pane" id="pane-r-mou" role="tabpanel">
+      <div class="dossier-title" style="font-size:1.1rem; margin-bottom:4px;">Bilateral Memorandum of August 9, 2026</div>
+      <div class="dossier-sub" style="margin-bottom:12px;">Strategic Reorganization & Long-Term Operational Framework</div>
+
+      <div class="dossier-specs-table">
+        <div class="dst-row"><span class="dst-key">1. Joint Training Centers:</span><span class="dst-val">Tartus Naval Point and Khmeimim Airbase transition to joint military training centers.</span></div>
+        <div class="dst-row"><span class="dst-key">2. Separation of Military and Civil Infrastructure:</span><span class="dst-val">Commercial Berth #4 in Tartus and civil airport returned to Syrian state administration.</span></div>
+        <div class="dst-row"><span class="dst-key">3. Military Presence &amp; African Transit Hub:</span><span class="dst-val">Preservation of 720th Logistics Point, aerospace squadron, air defense dome, and African transit vector.</span></div>
+        <div class="dst-row"><span class="dst-key">4. Transitional Framework (Up to 3 Months):</span><span class="dst-val">Joint commission oversees operational transition and civil handover within up to 3 months.</span></div>
+        <div class="dst-row"><span class="dst-key">Naval Limit:</span><span class="dst-val">Statutory berthing for up to 11 naval vessels simultaneously (2017 Agreement, Art. 2).</span></div>
+      </div>
+    </div>
+
+    <!-- PANE 3: DIPLOMATIC ROSTER & EMBASSY DONUT -->
+    <div class="tab-pane" id="pane-r-staff" role="tabpanel">
+      <div class="chart-box">
+        <canvas id="chart-diplo-donut"></canvas>
+      </div>
+      <div class="staff-filter-bar">
+        <button class="sfb-btn active" id="esw-all" onclick="filterStaffList('all', this)">All Diplomats</button>
+        <button class="sfb-btn" id="esw-syria" onclick="filterStaffList('syria', this)">Syrian Embassy</button>
+        <button class="sfb-btn" id="esw-russia" onclick="filterStaffList('russia', this)">Russian Embassy</button>
+      </div>
+      <div id="staff-roster-box"></div>
+    </div>
+
+    <!-- PANE 4: ENERGY & COMMODITY SECURITY -->
+    <div class="tab-pane" id="pane-r-energy" role="tabpanel">
+      <div class="dossier-title" style="font-size:1.1rem; margin-bottom:4px;">Energy & Commodity Security Axis</div>
+      <div class="dossier-sub" style="margin-bottom:12px;">Crude Oil & Milling Wheat Maritime Supply Lines</div>
+
+      <div class="dossier-specs-table">
+        <div class="dst-row"><span class="dst-key">Crude Supply:</span><span class="dst-val">~60,000 bpd Russian crude to Baniyas Refinery</span></div>
+        <div class="dst-row"><span class="dst-key">Growth Rate:</span><span class="dst-val">+75% surge in Russian crude tanker shipments in 2026 (Reuters)</span></div>
+        <div class="dst-row"><span class="dst-key">Food Security:</span><span class="dst-val">~2.5M metric tons Russian wheat/year imported via Latakia</span></div>
+        <div class="dst-row"><span class="dst-key">Import Share:</span><span class="dst-val">85%+ of Syria's total domestic grain imports</span></div>
+        <div class="dst-row"><span class="dst-key">Payment Terms:</span><span class="dst-val">Bilateral ruble/pound settlement and energy offsets</span></div>
+      </div>
+    </div>
+
+    <!-- PANE 5: STRATEGIC POLAR BALANCE -->
+    <div class="tab-pane" id="pane-r-polar" role="tabpanel">
+      <div class="chart-box" style="height:240px;">
+        <canvas id="chart-strategic-polar"></canvas>
+      </div>
+      <div class="dossier-desc" style="font-size:0.78rem;">
+        Integrated multi-domain radar coverage across 6 strategic pillars: naval logistics support, integrated aerospace air defense, sovereign energy security, agricultural grain stability, transcontinental transit into Africa, and permanent diplomatic dialogue.
+      </div>
+    </div>
+
+    <!-- PANE 6: EXECUTIVE CONCLUSION -->
+    <div class="tab-pane" id="pane-r-concl" role="tabpanel">
+      <div class="dossier-title" style="font-size:1.1rem; margin-bottom:4px;">Executive Conclusion (September 2026)</div>
+      <div class="dossier-sub" style="margin-bottom:12px;">Strategic Synthesis of Bilateral Partnership</div>
+
+      <div class="dossier-desc">
+        The Russian-Syrian geopolitical axis remains a cornerstone of stability in the Eastern Mediterranean. The August 9, 2026 Memorandum achieves a strategic realignment: Syria expands civil sovereign control over commercial port berths and civilian airport facilities, while Russia secures its long-term naval logistics capabilities in Tartus and aerospace operations in Khmeimim under a joint training framework. Combined with vital crude and grain maritime lifelines, the partnership functions as an indispensable strategic hub connecting Eurasia and Africa.
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══ BOTTOM CHRONOLOGY DOCK (TIME-MACHINE SCRUBBER) ═══ -->
+<nav class="bottom-chronology-dock" aria-label="Historical Time-Machine Scrubber">
+  <span class="bcd-label">Chronology:</span>
+  <div class="epoch-track" role="toolbar">
+    <button class="epoch-step-btn" id="btn-epoch-1944" onclick="handleEpochScrubber('1944', this)">
+      <span class="step-year">1944</span>
+      <span class="step-name">Recognition</span>
+    </button>
+    <button class="epoch-step-btn" id="btn-epoch-1980" onclick="handleEpochScrubber('1980', this)">
+      <span class="step-year">1980</span>
+      <span class="step-name">Treaty</span>
+    </button>
+    <button class="epoch-step-btn" id="btn-epoch-2015" onclick="handleEpochScrubber('2015', this)">
+      <span class="step-year">2015</span>
+      <span class="step-name">Khmeimim</span>
+    </button>
+    <button class="epoch-step-btn active" id="btn-epoch-2026" onclick="handleEpochScrubber('2026', this)">
+      <span class="step-year">2026</span>
+      <span class="step-name">Memorandum</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ═══ MOBILE BOTTOM QUICK ACTIONS ═══ -->
+<div class="mobile-action-bar" id="mobile-action-bar">
+  <button class="mab-btn" onclick="toggleWing('left')" title="Open Target Operational Dossier">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <span>Dossier</span>
+  </button>
+  <button class="mab-btn" onclick="toggleWing('right')" title="Open Strategic Corridors & Balance">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    <span>Strategy</span>
+  </button>
+</div>
+
+<!-- ═══ AUTHORSHIP & ATTRIBUTION BADGE (BOTTOM-LEFT CORNER) ═══ -->
+<div class="sovereignty-badge" role="contentinfo" aria-label="Author Credentials">
+  <span class="ac-author">
+    <span class="ac-full">Nikita Aleksandrovich Aleksandrov</span>
+    <span class="ac-short">Nikita A. Aleksandrov</span>
+  </span>
+  <span class="ac-sep">·</span>
+  <span class="ac-group">Group 18401</span>
+  <span class="ac-sep">·</span>
+  <span class="ac-univ" title="Petrozavodsk State University">PetrSU</span>
+  <span class="ac-sep">·</span>
+  <a href="mailto:griend2@yandex.ru" class="ac-email" title="Direct Email Contact">griend2@yandex.ru</a>
+</div>
+
+<!-- ═══ INLINED STRATEGIC GEODATA DATASET (STANDALONE ZERO-404) ═══ -->
+<script id="inline-geo-2026">
+window.GEO_2026 = {"type":"FeatureCollection","features":[],"nodes":[{"id":"damascus","name":"Embassy of the Russian Federation","category":"diplomacy","city":"Damascus, Syria","address":"Omar Ben Al-Khattab St., Adawi District","coords":[33.5138,36.2765],"color":"#c084fc","badge":"Ambassador Dmitry Dogadkin · Decree No. 533","unit_label":"DIPLOMATIC MISSION ROSTER","unit_count":4,"tactical_units":[{"glyph":"🏛","code":"AMB","name":"Dmitry N. Dogadkin","role":"Ambassador Extraordinary and Plenipotentiary"},{"glyph":"📜","code":"MIN-C","name":"Evgeny S. Kozlov","role":"Minister-Counselor · Chancery Head"},{"glyph":"⚔","code":"DEF-ATT","name":"Col. Alexey V. Bodredinov","role":"Defense, Air, and Naval Attache"},{"glyph":"🛂","code":"CONS","name":"Zaur A. Guseynov","role":"Counselor · Head of Consular Section"}],"specs":[{"key":"Mission Status","val":"Principal Diplomatic Mission of the Russian Federation in Syria"},{"key":"Head of Mission","val":"Ambassador Dmitry Dogadkin (Presidential Decree No. 533, Aug 3, 2026)"},{"key":"2026 Negotiations","val":"Implementation of the Bilateral Memorandum of August 9, 2026"},{"key":"Host Nation","val":"Syrian Transitional Administration (Pres. Ahmed al-Sharaa)"},{"key":"Strategic Role","val":"Coordination of Tartus and Khmeimim Joint Centers, Energy & Grain"}],"details":"Principal Russian diplomatic mission in Damascus. Coordinates implementation of the August 9, 2026 Memorandum, bilateral trade, and joint security protocols with the transitional leadership."},{"id":"moscow","name":"Embassy of the Syrian Arab Republic","category":"diplomacy","city":"Moscow, Russia","address":"Mansurovsky Lane, 4","coords":[55.7432,37.6008],"color":"#34d399","badge":"Charge d'Affaires ad interim Abdulrazzak Ismaeel","unit_label":"ACCREDITED DIPLOMATIC CORPS","unit_count":6,"tactical_units":[{"glyph":"🏛","code":"CDA","name":"Abdulrazzak Ismaeel","role":"Counselor · Head of Mission (Charge d'Affaires)"},{"glyph":"🛂","code":"CONS","name":"Zaher Al Ahmar","role":"Counselor · Consular Section"},{"glyph":"📜","code":"SEC-2","name":"Kinan Saker","role":"Second Secretary · Political Section"},{"glyph":"💼","code":"ATT-1","name":"Muhannad Ali","role":"Attache"},{"glyph":"💼","code":"ATT-2","name":"Salah Al Mahamid","role":"Attache"},{"glyph":"💼","code":"ATT-3","name":"Safwan Hussein","role":"Attache"}],"specs":[{"key":"Mission Status","val":"Embassy of the Syrian Arab Republic to the Russian Federation"},{"key":"Head of Mission","val":"Abdulrazzak Ismaeel (Counselor & Charge d'Affaires ad interim)"},{"key":"Accreditation","val":"Official Diplomatic Registry, Russian Ministry of Foreign Affairs"},{"key":"Key Focus","val":"UN Security Council alignment, economic cooperation, grain logistics"}],"details":"Embassy of the Syrian Arab Republic in Moscow. Maintains continuous diplomatic dialogue, international legal coordination, and trade implementation."},{"id":"tartus","name":"Naval Training Center (720th Logistics Point)","category":"military","city":"Tartus, Syria","address":"Mediterranean Naval Facility","coords":[34.8958,35.8866],"color":"#38bdf8","badge":"MOU August 9, 2026 · Joint Training Center","unit_label":"STATUTORY BERTHING LIMIT: UP TO 11 NAVAL VESSELS","unit_count":11,"tactical_units":[{"glyph":"⚓","code":"PMTO-1","name":"Floating Workshop","role":"Ship repair and technical maintenance"},{"glyph":"⚓","code":"FRG-1","name":"Guided Missile Frigate","role":"Long-range precision cruise missiles"},{"glyph":"⚓","code":"FRG-2","name":"Air Defense Frigate","role":"Fleet air defense umbrella"},{"glyph":"⚓","code":"CORV-1","name":"Corvette","role":"Harbor patrol and water area security"},{"glyph":"⚓","code":"CORV-2","name":"Corvette","role":"Anti-sabotage defense"},{"glyph":"⚓","code":"SUB-1","name":"Varshavyanka Submarine","role":"Undersea reconnaissance and patrol"},{"glyph":"⚓","code":"SUB-2","name":"Varshavyanka Submarine","role":"Maritime approaches screening"},{"glyph":"⚓","code":"TNK-1","name":"Naval Fleet Oiler","role":"Bunkering and fuel logistics"},{"glyph":"⚓","code":"CARG-1","name":"Logistics Transport","role":"Technical cargo and spare parts supply"},{"glyph":"⚓","code":"TUG-1","name":"Rescue Tug","role":"Search, rescue, and salvage standby"},{"glyph":"⚓","code":"REC-1","name":"Intelligence Vessel","role":"Electronic surveillance and communications"}],"specs":[{"key":"2026 Format","val":"Joint Naval Training Center (Memorandum of August 9, 2026)"},{"key":"Berthing Limit","val":"Up to 11 naval vessels simultaneously (2017 Agreement, Art. 2)"},{"key":"Grain Hub","val":"Berth #4 initiative: regional grain redistribution hub"},{"key":"Repair Facility","val":"Floating workshop and naval technical depot preserved"},{"key":"Civilian Sector","val":"Commercial Berth #4 transferred to Syrian Port Authority"},{"key":"Transit Hub","val":"Strategic transit hub for operations in Africa and Mediterranean"}],"details":"Under the August 9, 2026 Memorandum, Tartus is reorganized into a joint naval training center. Russia maintains the 720th Logistics Support Point and repair floating workshop, while Berth #4 was transferred to Syrian civil administration."},{"id":"khmeimim","name":"Aerospace Training Center (Khmeimim Air Base)","category":"military","city":"Jableh, Latakia Province, Syria","address":"Bassel Al-Assad Military Airfield","coords":[35.4097,35.9492],"color":"#f87171","badge":"MOU August 9, 2026 · Joint Aviation Hub","unit_label":"AEROSPACE SQUADRON: 12 AIRCRAFT COMPLEMENT","unit_count":12,"tactical_units":[{"glyph":"✈","code":"SU-35-1","name":"Su-35S Fighter","role":"Air superiority fighter"},{"glyph":"✈","code":"SU-35-2","name":"Su-35S Fighter","role":"Air superiority fighter"},{"glyph":"✈","code":"SU-35-3","name":"Su-35S Fighter","role":"Combat air patrol"},{"glyph":"✈","code":"SU-35-4","name":"Su-35S Fighter","role":"Border interception"},{"glyph":"✈","code":"SU-34-1","name":"Su-34 Strike Jet","role":"Precision ground attack"},{"glyph":"✈","code":"SU-34-2","name":"Su-34 Strike Jet","role":"Precision ground attack"},{"glyph":"✈","code":"SU-34-3","name":"Su-34 Strike Jet","role":"Maritime strike role"},{"glyph":"✈","code":"SU-34-4","name":"Su-34 Strike Jet","role":"Tactical interdiction"},{"glyph":"✈","code":"SU-24-1","name":"Su-24M Bomber","role":"Tactical attack bomber"},{"glyph":"✈","code":"SU-24-2","name":"Su-24M Bomber","role":"Tactical attack bomber"},{"glyph":"✈","code":"KA-52-1","name":"Ka-52 Helicopter","role":"Perimeter armed reconnaissance"},{"glyph":"✈","code":"IL-76-1","name":"Il-76MD Transport","role":"Strategic military airlift"}],"specs":[{"key":"2026 Format","val":"Joint Flight Training Center for Syrian and Russian aircrews"},{"key":"Aviation Group","val":"Tactical aerospace squadron (fighters, strike jets, transports)"},{"key":"Legal Term","val":"2015 Agreement (indefinite), 2017 Protocol (49 years + 25-yr renewals)"},{"key":"Civilian Terminal","val":"Civil sector of airport transferred to Syrian Civil Aviation Authority"},{"key":"African Airlift","val":"Strategic transit hub for Russian missions into North Africa and Sahel"},{"key":"Air Defense","val":"S-400 Triumf and Pantsir-S1 tiered missile protection"}],"details":"Khmeimim Air Base operates as a joint aviation training center under the August 9, 2026 Memorandum. An aerospace squadron and air defense dome are preserved, while civil aviation facilities operate under Syrian control."},{"id":"baniyas","name":"Baniyas Marine Oil Terminal","category":"energy","city":"Baniyas, Tartus Province, Syria","address":"Offshore Crude Oil Discharge Facility","coords":[35.1842,35.9421],"color":"#10b981","badge":"Refinery Hub · ~60,000 Barrels/Day","unit_label":"SHUTTLE TANKER FLEET: 4 CARRIERS","unit_count":4,"tactical_units":[{"glyph":"🛢","code":"TNK-A1","name":"Aframax Tanker Line 1","role":"Crude oil carrier (100,000 DWT)"},{"glyph":"🛢","code":"TNK-A2","name":"Aframax Tanker Line 2","role":"Crude oil carrier (100,000 DWT)"},{"glyph":"🛢","code":"TNK-S1","name":"Suezmax Tanker Reserve","role":"Heavy crude carrier (140,000 DWT)"},{"glyph":"🛢","code":"TNK-P1","name":"Product Carrier","role":"Refined fuels and diesel"}],"specs":[{"key":"Crude Supply","val":"~60,000 bpd crude oil (+75% surge in 2026, Reuters verified)"},{"key":"Refinery Capacity","val":"Baniyas Refinery (120,000 to 125,000 bpd nameplate capacity)"},{"key":"Shipping Route","val":"Novorossiysk through Bosphorus, Aegean, and south of Cyprus"},{"key":"Strategic Value","val":"Powers 70%+ of Syrian national electrical and industrial grid"}],"details":"Primary crude oil receiving terminal and refinery in Syria. Continuous maritime deliveries from Novorossiysk supply the Baniyas refinery, securing power generation and domestic fuel needs."},{"id":"novorossiysk","name":"Port of Novorossiysk (Sheskharis Complex)","category":"energy","city":"Novorossiysk, Russia","address":"Sheskharis Petroleum Harbor, Black Sea","coords":[44.724,37.778],"color":"#fbbf24","badge":"Primary Loading Port for Crude & Grain","unit_label":"DEEPWATER LOADING BERTHS: 3 PIERS","unit_count":3,"tactical_units":[{"glyph":"⚓","code":"BERTH-1","name":"Sheskharis Pier 1","role":"Deepwater crude loading for tankers"},{"glyph":"⚓","code":"BERTH-2","name":"Sheskharis Pier 2","role":"Petroleum products and fuel oil"},{"glyph":"🌾","code":"GRAIN-1","name":"Grain Terminal Pier","role":"High-speed grain elevator loading"}],"specs":[{"key":"Terminal Facility","val":"Sheskharis Deepwater Petroleum Complex, Black Sea"},{"key":"Syrian Deliveries","val":"Crude oil tankers and grain bulk carriers to Syrian ports"},{"key":"Maritime Route","val":"Black Sea ➔ Turkish Straits ➔ Mediterranean ➔ Syrian Ports"},{"key":"Annual Tonnage","val":"Millions of metric tons of wheat and petroleum exports"}],"details":"Russia's principal deepwater export gateway on the Black Sea. Origin port for maritime energy and grain express corridors to the Syrian Mediterranean terminals."},{"id":"latakia","name":"Port of Latakia (Commercial Grain Terminal)","category":"energy","city":"Latakia, Syria","address":"Commercial Maritime Harbor","coords":[35.5317,35.7891],"color":"#34d399","badge":"Strategic Grain Bridge · ~2.5M Tons/Year","unit_label":"BULK GRAIN CARRIERS: 5 SHIPS","unit_count":5,"tactical_units":[{"glyph":"🌾","code":"BULK-1","name":"Supramax Carrier 1","role":"Wheat delivery (55,000 DWT)"},{"glyph":"🌾","code":"BULK-2","name":"Supramax Carrier 2","role":"Wheat delivery (55,000 DWT)"},{"glyph":"🌾","code":"BULK-3","name":"Handymax Carrier 3","role":"Barley and grain (38,000 DWT)"},{"glyph":"🌾","code":"BULK-4","name":"Handymax Carrier 4","role":"Flour and agricultural staples"},{"glyph":"🌾","code":"BULK-5","name":"Fertilizer Transport","role":"Mineral and nitrogen fertilizers"}],"specs":[{"key":"Food Security","val":"~2.5 million metric tons of Russian grain per season"},{"key":"Import Share","val":"Accounts for 80%+ of Syrian national wheat imports"},{"key":"Customs Regime","val":"Expedited customs clearance for humanitarian staples"},{"key":"Infrastructure","val":"High-capacity harbor grain silos and rail connection"}],"details":"Syria's primary commercial port for Russian food deliveries. Handles bulk grain carriers from Novorossiysk, guaranteeing food security across the republic."},{"id":"sevastopol","name":"Sevastopol Naval Base (Black Sea Fleet)","category":"military","city":"Sevastopol, Crimea","address":"Black Sea Fleet Logistics Command","coords":[44.6166,33.5224],"color":"#60a5fa","badge":"Origin of Syrian Express Logistics Line","unit_label":"LOGISTICS ESCORT SQUADRON: 3 VESSELS","unit_count":3,"tactical_units":[{"glyph":"⚓","code":"LST-1","name":"Landing Ship Supply","role":"Heavy technical equipment transport"},{"glyph":"⚓","code":"CARG-1","name":"Auxiliary Cargo Ship","role":"Ammunition and maintenance hardware"},{"glyph":"⚓","code":"TNK-1","name":"Fleet Tanker","role":"Marine fuel and bunkering"}],"specs":[{"key":"Operational Role","val":"Primary staging base for the \"Syrian Express\" naval supply"},{"key":"Route","val":"Sevastopol ➔ Bosphorus ➔ Dardanelles ➔ Tartus 720th Point"},{"key":"Fleet Support","val":"Maintains Mediterranean naval presence (up to 11 vessels)"}],"details":"Principal home base of Russia's Black Sea Fleet. Serves as the primary logistics origin for the naval resupply corridor supporting the Tartus facility."},{"id":"libya_hub","name":"Benghazi Forward Staging Base (Libya)","category":"transit","city":"Benghazi, Libya","address":"North African Maritime & Air Staging Area","coords":[32.1167,20.0667],"color":"#f97316","badge":"MOU 2026 · North African Forward Hub","unit_label":"AIRLIFT & MARITIME DETACHMENTS","unit_count":2,"tactical_units":[{"glyph":"✈","code":"AIR-LIB","name":"Il-76MD Staging Flight","role":"Forward air corridor via Khmeimim"},{"glyph":"⚓","code":"SEA-LIB","name":"Maritime Cargo Transport","role":"Naval auxiliary resupply via Tartus"}],"specs":[{"key":"Legal Basis","val":"Bilateral coordination & August 9, 2026 Memorandum"},{"key":"Facility Role","val":"Forward Mediterranean staging point connecting Syria to Africa"},{"key":"Logistics Axis","val":"Direct connection from Tartus and Khmeimim into Central Africa"}],"details":"North African forward staging base in Benghazi. Connects Russian logistics facilities in Syria with wider missions across Africa."},{"id":"sahel_hub","name":"Sahel Central Operations Base (Gao & Bamako, Mali)","category":"transit","city":"Gao & Bamako, Mali","address":"Sahel Regional Security & Logistics Command","coords":[16.2717,-0.0447],"color":"#ea580c","badge":"Africa Corps Strategic Anchor in Sahel","unit_label":"AFRICA CORPS LOGISTICS DETACHMENTS: 3 UNITS","unit_count":3,"tactical_units":[{"glyph":"✈","code":"AIR-SAH","name":"Strategic Airlift Terminal","role":"Transcontinental supply reception"},{"glyph":"🛡","code":"SEC-SAH","name":"Perimeter Defense Wing","role":"Base security and convoy escort"},{"glyph":"🔧","code":"MTO-SAH","name":"Field Maintenance Depot","role":"Technical repair and equipment readiness"}],"specs":[{"key":"Operational Role","val":"Central operational and logistics hub for Africa Corps in the Sahel"},{"key":"Partner Nations","val":"Alliance of Sahel States (Mali, Niger, Burkina Faso)"},{"key":"Supply Chain","val":"Russia ➔ Syria (Khmeimim) ➔ Libya ➔ Sahel Backbone (4,800 km)"}],"details":"Central operating hub of the Africa Corps in the Sahel (Mali). Supported by transcontinental airlift staging through Khmeimim airbase and Tartus port."}],"corridors":[{"id":"airbridge_moscow_khmeimim","name":"Strategic Air Bridge: Moscow — Khmeimim","category":"air","color":"#38bdf8","endpoints":["moscow","khmeimim"],"from_name":"Moscow (Chkalovsky Airfield)","to_name":"Khmeimim (Aerospace Training Center)","distance_km":2460,"throughput":"Regular Il-76MD Military Transport Flights","legal_basis":"Memorandum of Aug 9, 2026 · 2015/2017 Agreements","description":"Principal strategic military air bridge. Transports instructional personnel, aircraft spare parts, medical shipments, and diplomatic pouches directly to Khmeimim.","coordinates":[[37.6008,55.7432],[39.2,51.5],[39.7,47.2],[39,43.5],[36.8,39.5],[35.9492,35.4097]]},{"id":"airbridge_moscow_damascus","name":"Government Flight Corridor: Moscow — Damascus","category":"diplo","color":"#c084fc","endpoints":["moscow","damascus"],"from_name":"Moscow (Vnukovo-2)","to_name":"Damascus International Airport","distance_km":2480,"throughput":"Special Flight Detachment \"Rossiya\" & Diplomatic Missions","legal_basis":"Diplomatic Relations established 1944 · Intergovernmental Accords","description":"Dedicated government aviation route for high-level delegations, ministerial consultations, and working groups implementing the 2026 bilateral agreements.","coordinates":[[37.6008,55.7432],[38.5,48],[38.2,42],[37,36.5],[36.2765,33.5138]]},{"id":"sea_oil_novorossiysk_baniyas","name":"Maritime Crude Oil Corridor: Novorossiysk — Baniyas","category":"sea","color":"#10b981","endpoints":["novorossiysk","baniyas"],"from_name":"Novorossiysk (Sheskharis Petroleum Harbor)","to_name":"Baniyas (Offshore Crude Terminal & Refinery)","distance_km":3420,"throughput":"~60,000 Barrels/Day Crude Oil (+75% surge in 2026, Reuters)","legal_basis":"Bilateral Intergovernmental Energy Agreement 2026","description":"Syria's primary energy lifeline. Aframax and Suezmax shuttle tankers carry crude oil through the Turkish Straits and deep Mediterranean waters south of Cyprus directly to the Baniyas refinery.","coordinates":[[37.778,44.724],[34.5,43.2],[29.15,41.25],[28,40.7],[26.4,40.2],[25.8,38],[27.5,35.8],[30,34.5],[32,34.1],[33.3,34.1],[34.6,34.3],[35.4,34.8],[35.9421,35.1842]]},{"id":"sea_grain_novorossiysk_latakia","name":"Maritime Grain Express: Novorossiysk — Latakia","category":"sea","color":"#34d399","endpoints":["novorossiysk","latakia"],"from_name":"Novorossiysk (Grain Export Terminal)","to_name":"Latakia (Commercial Grain Port)","distance_km":3370,"throughput":"~2.5 Million Metric Tons Wheat/Year (85% of Syria's imports)","legal_basis":"Trade Contracts between Syrian Ministry of Agriculture & Russian Grain Exporters","description":"Strategic food security channel. Bulk grain carriers transport milling wheat, barley, and fertilizers through the Straits and south around Cyprus into Latakia harbor.","coordinates":[[37.778,44.724],[33.8,43.1],[29.15,41.25],[28,40.7],[26.4,40.2],[25.8,38],[27.8,35.6],[30.2,34.5],[32.2,34.1],[33.5,34.1],[34.8,34.4],[35.5,35.1],[35.7891,35.5317]]},{"id":"sea_naval_sevastopol_tartus","name":"Naval Logistics Line \"Syrian Express\": Sevastopol — Tartus","category":"sea","color":"#60a5fa","endpoints":["sevastopol","tartus"],"from_name":"Sevastopol (Black Sea Fleet)","to_name":"Tartus (720th Naval Logistics Point)","distance_km":3390,"throughput":"Resupply of Mediterranean Squadron (up to 11 vessels limit)","legal_basis":"2017 Agreement (Art. 2) · Memorandum of Aug 9, 2026","description":"Continuous naval resupply corridor. Auxiliary vessels and logistics transports supply fuel, technical components, and ship-repair materials to Tartus.","coordinates":[[33.5224,44.6166],[31.2,42.8],[29.15,41.25],[28,40.7],[26.4,40.2],[25.5,37.8],[27.6,35.5],[30,34.4],[32,34],[33.4,34],[34.7,34.2],[35.4,34.6],[35.8866,34.8958]]},{"id":"tactical_latakia_khmeimim","name":"Coastal Defense Corridor: Latakia — Khmeimim","category":"tactical","color":"#a855f7","endpoints":["latakia","khmeimim"],"from_name":"Port of Latakia","to_name":"Khmeimim Air Base","distance_km":25,"throughput":"Overland Logistics & Air Defense Umbrella","legal_basis":"Joint Coastal Security Protocol","description":"Critical 25 km tactical corridor connecting the commercial harbor with Khmeimim Air Base under unified S-400 and Pantsir-S1 air defense coverage.","coordinates":[[35.7891,35.5317],[35.84,35.48],[35.9492,35.4097]]},{"id":"tactical_khmeimim_baniyas","name":"Aviation Fuel Pipeline & Defense Spine: Khmeimim — Baniyas","category":"tactical","color":"#06b6d4","endpoints":["khmeimim","baniyas"],"from_name":"Khmeimim Air Base","to_name":"Baniyas Petroleum Terminal","distance_km":40,"throughput":"TS-1 Aviation Fuel Logistics & Coastal Security","legal_basis":"Inter-facility Energy & Security Protocol","description":"Direct 40 km pipeline and highway spine transporting aviation kerosene refined at Baniyas directly to fuel storage tanks at Khmeimim.","coordinates":[[35.9492,35.4097],[35.95,35.3],[35.9421,35.1842]]},{"id":"tactical_baniyas_tartus","name":"Fleet Bunkering Channel: Baniyas — Tartus","category":"tactical","color":"#14b8a6","endpoints":["baniyas","tartus"],"from_name":"Baniyas Petroleum Terminal","to_name":"Tartus Naval Point","distance_km":35,"throughput":"Coastal Fleet Bunkering & Fuel Oil Transit","legal_basis":"Tartus Accord 2017 · Memorandum 2026","description":"Short coastal corridor providing heavy marine fuel oil and diesel bunkering for Russian naval vessels docked at Tartus.","coordinates":[[35.9421,35.1842],[35.91,35.04],[35.8866,34.8958]]},{"id":"highway_tartus_damascus","name":"Strategic Arterial Highway M-1/M-2: Tartus — Damascus","category":"tactical","color":"#f59e0b","endpoints":["tartus","damascus"],"from_name":"Tartus Military & Maritime Cluster","to_name":"Damascus (Capital & Embassy of Russia)","distance_km":220,"throughput":"Primary Overland State Transit Highway","legal_basis":"Memorandum of Aug 9, 2026 · Intergovernmental Coordination","description":"Primary overland arterial highway connecting the Russian coastal defense facilities in Tartus and Latakia with the capital Damascus.","coordinates":[[35.8866,34.8958],[36.3,34.78],[36.72,34.73],[36.7,34.02],[36.35,33.6],[36.2765,33.5138]]},{"id":"transit_africa","name":"Transcontinental Strategic Vector: Syria — Africa & Sahel","category":"transit","color":"#f97316","endpoints":["khmeimim","sahel_hub"],"from_name":"Khmeimim & Tartus (Russian Logistics Hub)","to_name":"Benghazi (Libya) ➔ Sahel (Gao & Bamako, Mali)","distance_km":4800,"throughput":"Strategic Airlift & Maritime Logistics Spine","legal_basis":"Memorandum of Aug 9, 2026 (Clause on African Transit Hub Status)","description":"Transcontinental strategic corridor officially affirmed in the August 9, 2026 Memorandum. Connects Russian military logistics hubs in Syria with forward positions in Libya and the Sahel Alliance.","coordinates":[[35.9492,35.4097],[34,34],[27,33],[20.0667,32.1167],[14.5,26],[8,19],[-0.0447,16.2717],[-7.9898,12.6392]]},{"id":"diplo_comms","name":"Secure Government Communications: Moscow — Damascus","category":"diplo","color":"#ec4899","endpoints":["moscow","damascus"],"from_name":"Moscow (MFA Russia)","to_name":"Damascus (Russian Embassy & Syrian MFA)","distance_km":2460,"throughput":"Encrypted High-Security Government Link","legal_basis":"Diplomatic Protocol Russia — Syria","description":"Continuous encrypted telecommunications channel connecting state leadership and embassies in Moscow and Damascus for bilateral security and UN Security Council coordination.","coordinates":[[37.6008,55.7432],[37.2,45],[36.8,38],[36.2765,33.5138]]}]};
+</script>
+
+<!-- ═══ INLINED 3D MAP ENGINE (STANDALONE ZERO-404) ═══ -->
+<script id="inline-globe-engine">
+/**
+ * ══════════════════════════════════════════════════════════════════════════════
+ * RUSSIA · SYRIA STRATEGIC AXIS — COMMAND CENTER 3D MAP ENGINE v5.0
+ * Powered by MapLibre GL JS (High-Precision 2.5D/3D Tactical GIS)
+ * 
+ * Strict Anti-Slop & Command Center Architecture:
+ * - 3 Zero-API-Key Cartographic Tiers (Zero Watermarks, 100% Free):
+ *     1. ESRI World Dark Gray Base (Clean, high-contrast command center NOC)
+ *     2. ESRI World Imagery (Sub-meter photorealistic satellite detail)
+ *     3. OSM Detailed Streets & Hydrography (Full road/harbor/city labels)
+ * - Complete 11-Vector Strategic Corridors Network:
+ *     Air bridges, Maritime oil/grain/fleet corridors, Coastal defensive arc,
+ *     Damascus highway axis, African transit vector, Secure diplo comms.
+ * - Dynamic Interactive Corridor Selection & Bounding Box Framing:
+ *     Clicking any line highlights connected nodes, pulses line glow,
+ *     and opens operational dossier.
+ * - Pixel-Perfect Zero-Dimension Anchor Pins:
+ *     Centered at (0,0) geographic coordinates with directional anti-collision tooltips.
+ * ══════════════════════════════════════════════════════════════════════════════
+ */
+'use strict';
+
+(function(root) {
+  let map = null;
+  let activeNodeId = null;
+  let activeCorridorId = null;
+  let currentBasemap = 'dark';
+  let isRotating = false;
+  let rotationTimer = null;
+
+  // Crisp, single-weight vector SVG glyphs (Anti-Slop Design compliant)
+  const SVG_ICONS = {
+    anchor: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><line x1="12" y1="8" x2="12" y2="21"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/><path d="M9 18l3 3 3-3"/></svg>',
+    jet: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L9 9H2l7 5-3 8 6-4 6 4-3-8 7-5h-7z"/></svg>',
+    embassy: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 10h18M5 10v11M9 10v11M15 10v11M19 10v11M12 2L2 7h20L12 2z"/></svg>',
+    fuel: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg>',
+    vessel: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 17l2 3h16l2-3-4-8H6z"/><path d="M8 9V4h8v5"/><path d="M12 4v5"/></svg>',
+    star: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
+  };
+
+  /**
+   * Strategic Node Positions & Anti-Collision Offsets
+   * Exact Geographic Coordinates: [Longitude, Latitude]
+   */
+  const NODE_LOCATIONS = {
+    tartus: {
+      center: [35.8866, 34.8958], // Naval Training Center / 720th Logistics Point
+      zoom: 14.2,
+      pitch: 45,
+      bearing: -20,
+      iconKey: 'anchor',
+      tag: 'NAVAL HUB',
+      name: 'Tartus Naval Training Center',
+      color: '#38bdf8',
+      dir: 'dir-west'
+    },
+    baniyas: {
+      center: [35.9421, 35.1842], // Oil Terminal & Refinery
+      zoom: 13.5,
+      pitch: 35,
+      bearing: 0,
+      iconKey: 'fuel',
+      tag: 'CRUDE OIL & REFINERY',
+      name: 'Baniyas Petroleum Terminal',
+      color: '#10b981',
+      dir: 'dir-east'
+    },
+    khmeimim: {
+      center: [35.9492, 35.4097], // Khmeimim Air Base
+      zoom: 13.8,
+      pitch: 40,
+      bearing: 10,
+      iconKey: 'jet',
+      tag: 'AEROSPACE HUB',
+      name: 'Khmeimim Aerospace Center',
+      color: '#f87171',
+      dir: 'dir-west'
+    },
+    latakia: {
+      center: [35.7891, 35.5317], // Port of Latakia
+      zoom: 13.2,
+      pitch: 35,
+      bearing: -15,
+      iconKey: 'vessel',
+      tag: 'GRAIN PORT',
+      name: 'Port of Latakia (Grain Terminal)',
+      color: '#34d399',
+      dir: 'dir-east'
+    },
+    damascus: {
+      center: [36.2765, 33.5138], // Russian Embassy in Damascus
+      zoom: 14.5,
+      pitch: 45,
+      bearing: -15,
+      iconKey: 'embassy',
+      tag: 'RUSSIAN EMBASSY',
+      name: 'Russian Embassy (Damascus)',
+      color: '#c084fc',
+      dir: 'dir-east'
+    },
+    novorossiysk: {
+      center: [37.7780, 44.7240], // Port of Novorossiysk (Sheskharis)
+      zoom: 12.8,
+      pitch: 35,
+      bearing: -10,
+      iconKey: 'vessel',
+      tag: 'SHESKHARIS PORT',
+      name: 'Port of Novorossiysk',
+      color: '#fbbf24',
+      dir: 'dir-west'
+    },
+    moscow: {
+      center: [37.6008, 55.7432], // Moscow / MFA Russia / Syrian Embassy
+      zoom: 12.2,
+      pitch: 30,
+      bearing: 0,
+      iconKey: 'star',
+      tag: 'RUSSIAN CAPITAL',
+      name: 'Moscow · MFA & Syrian Embassy',
+      color: '#38bdf8',
+      dir: 'dir-east'
+    },
+    sevastopol: {
+      center: [33.5224, 44.6166], // Sevastopol Naval Base
+      zoom: 12.5,
+      pitch: 35,
+      bearing: -10,
+      iconKey: 'anchor',
+      tag: 'BLACK SEA FLEET',
+      name: 'Sevastopol Naval Base',
+      color: '#60a5fa',
+      dir: 'dir-east'
+    },
+    libya_hub: {
+      center: [20.0667, 32.1167], // Benghazi Forward Staging Base
+      zoom: 11.5,
+      pitch: 30,
+      bearing: 0,
+      iconKey: 'jet',
+      tag: 'NORTH AFRICA HUB',
+      name: 'Benghazi Forward Base (Libya)',
+      color: '#f97316',
+      dir: 'dir-east'
+    },
+    sahel_hub: {
+      center: [-0.0447, 16.2717], // Gao / Sahel Central Operations Hub, Mali
+      zoom: 10.5,
+      pitch: 28,
+      bearing: 0,
+      iconKey: 'jet',
+      tag: 'SAHEL HUB (MALI)',
+      name: 'Sahel Central Base (Gao, Mali)',
+      color: '#ea580c',
+      dir: 'dir-east'
+    }
+  };
+
+  const isSmallScreen = (typeof window !== 'undefined' && window.innerWidth < 850);
+  const PRESETS = {
+    axis: {
+      center: isSmallScreen ? [36.0, 36.5] : [35.0, 44.0],
+      zoom: isSmallScreen ? 4.8 : 3.3,
+      pitch: isSmallScreen ? 18 : 22,
+      bearing: 0
+    },
+    levant: {
+      center: [36.0, 34.7],
+      zoom: 7.9,
+      pitch: 35,
+      bearing: -10
+    },
+    corridors: {
+      center: [32.0, 41.5],
+      zoom: 4.4,
+      pitch: 28,
+      bearing: -8
+    },
+    moscow: {
+      center: [37.60, 55.75],
+      zoom: 9.5,
+      pitch: 30,
+      bearing: 0
+    },
+    maritime: {
+      center: [31.5, 39.5],
+      zoom: 5.3,
+      pitch: 26,
+      bearing: -12
+    },
+    africa: {
+      center: [15.0, 24.0],
+      zoom: 3.2,
+      pitch: 20,
+      bearing: 0
+    }
+  };
+
+  /**
+   * Main Initialize Function
+   */
+  function initEngine(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (typeof maplibregl === 'undefined') {
+      console.error('MapLibre GL not detected.');
+      container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#94a3b8;font-family:sans-serif;font-size:14px;">Loading map engine...</div>';
+      return;
+    }
+
+    try {
+      initMapLibreGlobe(container);
+    } catch (err) {
+      console.error('MapLibre initialization error:', err);
+    }
+  }
+
+  function initMapLibreGlobe(container) {
+    map = new maplibregl.Map({
+      container: container,
+      style: {
+        version: 8,
+        sources: {
+          'esri-dark': {
+            type: 'raster',
+            tiles: [
+              'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'
+            ],
+            tileSize: 256,
+            attribution: '&copy; Esri, HERE, Garmin, &copy; OpenStreetMap'
+          },
+          'esri-satellite': {
+            type: 'raster',
+            tiles: [
+              'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+            ],
+            tileSize: 256,
+            attribution: '&copy; Esri &copy; Maxar'
+          },
+          'esri-streets': {
+            type: 'raster',
+            tiles: [
+              'https://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}'
+            ],
+            tileSize: 256,
+            attribution: '&copy; Esri, OpenStreetMap contributors'
+          }
+        },
+        layers: [
+          {
+            id: 'background',
+            type: 'background',
+            paint: {
+              'background-color': '#060b18'
+            }
+          },
+          {
+            id: 'base-dark',
+            type: 'raster',
+            source: 'esri-dark',
+            layout: { visibility: 'visible' },
+            minzoom: 0,
+            maxzoom: 19
+          },
+          {
+            id: 'base-satellite',
+            type: 'raster',
+            source: 'esri-satellite',
+            layout: { visibility: 'none' },
+            minzoom: 0,
+            maxzoom: 19
+          },
+          {
+            id: 'base-streets',
+            type: 'raster',
+            source: 'esri-streets',
+            layout: { visibility: 'none' },
+            minzoom: 0,
+            maxzoom: 19
+          }
+        ]
+      },
+      center: PRESETS.axis.center,
+      zoom: PRESETS.axis.zoom,
+      pitch: PRESETS.axis.pitch,
+      bearing: PRESETS.axis.bearing,
+      attributionControl: false
+    });
+
+    // Auto-resize listeners for mobile viewport stability
+    window.addEventListener('resize', () => { if (map) map.resize(); }, { passive: true });
+    window.addEventListener('orientationchange', () => {
+      setTimeout(() => { if (map) map.resize(); }, 150);
+      setTimeout(() => { if (map) map.resize(); }, 500);
+    }, { passive: true });
+
+    map.on('load', () => {
+      map.resize();
+      setupGeoJsonLayers();
+      setupTacticalMarkers(container);
+      setupZoomLOD(container);
+      setTimeout(() => { if (map) map.resize(); }, 250);
+    });
+  }
+
+  /**
+   * Monitor Zoom to toggle Level of Detail (LOD)
+   */
+  function setupZoomLOD(container) {
+    const updateLOD = () => {
+      const z = map.getZoom();
+      if (z >= 6.4) {
+        container.classList.add('lod-theater');
+      } else {
+        container.classList.remove('lod-theater');
+      }
+    };
+    map.on('zoom', updateLOD);
+    updateLOD();
+  }
+
+  /**
+   * Add Sovereign 2026 Borders and Full Corridors Network
+   */
+  function setupGeoJsonLayers() {
+    // 0. Global Sovereign Landmass & Borders (Zero-Tile Offline Vector Underlay)
+    const worldGeo = window.WORLD_VECTOR;
+    if (worldGeo) {
+      map.addSource('world-vector-source', {
+        type: 'geojson',
+        data: worldGeo
+      });
+
+      // Tactical command-center continent fill (guarantees land is never pitch black)
+      map.addLayer({
+        id: 'world-land-fill',
+        type: 'fill',
+        source: 'world-vector-source',
+        paint: {
+          'fill-color': '#0d182e',
+          'fill-opacity': 0.95
+        }
+      });
+
+      // Sovereign country boundary borders
+      map.addLayer({
+        id: 'world-country-borders',
+        type: 'line',
+        source: 'world-vector-source',
+        paint: {
+          'line-color': '#1e385c',
+          'line-width': 0.8,
+          'line-opacity': 0.7
+        }
+      });
+    }
+
+    const geo = window.GEO_2026;
+    if (!geo) return;
+
+    // 1. Russian Federation 2026 Sovereign Territory (All 89 Constitutional Subjects)
+    if (geo.russia) {
+      map.addSource('rf-2026-borders', {
+        type: 'geojson',
+        data: { type: 'Feature', geometry: geo.russia }
+      });
+
+      map.addLayer({
+        id: 'rf-borders-fill',
+        type: 'fill',
+        source: 'rf-2026-borders',
+        paint: {
+          'fill-color': '#0284c7',
+          'fill-opacity': 0.12
+        }
+      });
+
+      map.addLayer({
+        id: 'rf-borders-line',
+        type: 'line',
+        source: 'rf-2026-borders',
+        paint: {
+          'line-color': '#38bdf8',
+          'line-width': 1.6,
+          'line-opacity': 0.95
+        }
+      });
+    }
+
+    // 2. Syrian Arab Republic Sovereign Territory (including Golan Heights)
+    if (geo.syria) {
+      map.addSource('syria-2026-borders', {
+        type: 'geojson',
+        data: { type: 'Feature', geometry: geo.syria }
+      });
+
+      map.addLayer({
+        id: 'syria-borders-fill',
+        type: 'fill',
+        source: 'syria-2026-borders',
+        paint: {
+          'fill-color': '#10b981',
+          'fill-opacity': 0.18
+        }
+      });
+
+      map.addLayer({
+        id: 'syria-borders-line',
+        type: 'line',
+        source: 'syria-2026-borders',
+        paint: {
+          'line-color': '#34d399',
+          'line-width': 2.2,
+          'line-opacity': 0.98
+        }
+      });
+    }
+
+    // 3. Dynamic Rendering of ALL 11 Strategic Corridors
+    if (geo.corridors && Array.isArray(geo.corridors)) {
+      geo.corridors.forEach(c => {
+        const sourceId = `src-corridor-${c.id}`;
+        map.addSource(sourceId, {
+          type: 'geojson',
+          data: {
+            type: 'Feature',
+            properties: { id: c.id, name: c.name, category: c.category, color: c.color },
+            geometry: {
+              type: 'LineString',
+              coordinates: c.coordinates
+            }
+          }
+        });
+
+        // Category-Specific High-Contrast Dash Patterns (Aviation, Nautical, Telemetry)
+        let dashArray;
+        if (c.category === 'air') {
+          // Strategic Air Bridge: crisp aviation airway dashes with wide gaps
+          dashArray = [4, 3];
+        } else if (c.category === 'sea') {
+          // Maritime Shipping Lanes: nautical segmented route dashes
+          dashArray = [6, 4];
+        } else if (c.category === 'diplo') {
+          // Encrypted Government Communications / Diplomatic Air Corridor: high-freq telemetry pulse
+          dashArray = [2, 3];
+        } else if (c.category === 'transit') {
+          // Transcontinental African Strategic Axis: long segmented vector
+          dashArray = [7, 4];
+        } else if (c.category === 'tactical') {
+          // Coastal Defense & Pipelines: structured tactical links
+          dashArray = [4, 3];
+        }
+
+        // 3a. Outer Atmospheric Glow Layer (Synchronized with dash array!)
+        const glowPaint = {
+          'line-color': c.color || '#38bdf8',
+          'line-width': 3.6,
+          'line-opacity': 0.35,
+          'line-blur': 0.8
+        };
+        if (dashArray) {
+          glowPaint['line-dasharray'] = dashArray;
+        }
+
+        map.addLayer({
+          id: `layer-glow-${c.id}`,
+          type: 'line',
+          source: sourceId,
+          paint: glowPaint
+        });
+
+        // 3b. Inner Crisp Core Layer
+        const corePaint = {
+          'line-color': c.color || '#38bdf8',
+          'line-width': 2.6,
+          'line-opacity': 1.0
+        };
+        if (dashArray) {
+          corePaint['line-dasharray'] = dashArray;
+        }
+
+        map.addLayer({
+          id: `layer-core-${c.id}`,
+          type: 'line',
+          source: sourceId,
+          paint: corePaint
+        });
+
+        // 3c. Wide Hit Target Layer for Smooth Touch and Mouse Interaction
+        map.addLayer({
+          id: `layer-hit-${c.id}`,
+          type: 'line',
+          source: sourceId,
+          paint: {
+            'line-color': 'transparent',
+            'line-width': 32
+          }
+        });
+
+        // Mouse hover effects
+        map.on('mouseenter', `layer-hit-${c.id}`, () => {
+          map.getCanvas().style.cursor = 'pointer';
+          map.setPaintProperty(`layer-glow-${c.id}`, 'line-opacity', 0.85);
+          map.setPaintProperty(`layer-glow-${c.id}`, 'line-width', 6.0);
+        });
+
+        map.on('mouseleave', `layer-hit-${c.id}`, () => {
+          map.getCanvas().style.cursor = '';
+          if (activeCorridorId !== c.id) {
+            map.setPaintProperty(`layer-glow-${c.id}`, 'line-opacity', 0.35);
+            map.setPaintProperty(`layer-glow-${c.id}`, 'line-width', c.category === 'tactical' ? 4.5 : 3.8);
+          }
+        });
+
+        // Mouse click handler
+        map.on('click', `layer-hit-${c.id}`, (e) => {
+          e.originalEvent.stopPropagation();
+          selectCorridor(c.id);
+        });
+      });
+    }
+  }
+
+  /**
+   * Setup Pixel-Perfect Zero-Dimension Anchor Tactical Pins
+   */
+  function setupTacticalMarkers() {
+    const geo = window.GEO_2026;
+    if (!geo || !geo.nodes) return;
+
+    geo.nodes.forEach(node => {
+      const info = NODE_LOCATIONS[node.id];
+      if (!info) return;
+
+      const svgIcon = SVG_ICONS[info.iconKey] || SVG_ICONS.star;
+
+      const el = document.createElement('div');
+      el.className = `tactical-pin pin-${node.id}`;
+      el.id = `map-pin-${node.id}`;
+
+      el.innerHTML = `
+        <div class="tp-dot">
+          <div class="tp-core" style="border-color:${info.color}">
+            <span class="tp-svg" style="color:${info.color}">${svgIcon}</span>
+          </div>
+        </div>
+        <div class="tp-label-wrap ${info.dir}">
+          <div class="tp-label">
+            <span class="tp-tag" style="color:${info.color}">${info.tag}</span>
+            <span class="tp-name">${info.name}</span>
+          </div>
+        </div>
+      `;
+
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (typeof window.selectStrategicTarget === 'function') {
+          window.selectStrategicTarget(node.id);
+        } else {
+          selectNode(node.id);
+        }
+      });
+
+      // Anchor 'center' on a 0x0 element places the coordinate at exact pixel center (0, 0)
+      new maplibregl.Marker({ element: el, anchor: 'center' })
+        .setLngLat(info.center)
+        .addTo(map);
+    });
+  }
+
+  /**
+   * Fly to predefined strategic view with calm cubic damping
+   */
+  function flyToPreset(presetKey) {
+    if (!map) return;
+    const p = PRESETS[presetKey] || PRESETS.axis;
+
+    map.flyTo({
+      center: p.center,
+      zoom: p.zoom,
+      pitch: p.pitch,
+      bearing: p.bearing,
+      duration: 1800,
+      curve: 1.25,
+      essential: true
+    });
+  }
+
+  /**
+   * Select a strategic node: fly in close with deep tactical detail
+   */
+  function selectNode(nodeId) {
+    if (!map) return;
+    const info = NODE_LOCATIONS[nodeId];
+    if (!info) return;
+
+    activeNodeId = nodeId;
+    activeCorridorId = null;
+
+    // Reset corridor glows
+    resetCorridorGlows();
+
+    // Highlight active pin on map
+    document.querySelectorAll('.tactical-pin').forEach(p => p.classList.remove('active'));
+    const activePin = document.getElementById(`map-pin-${nodeId}`);
+    if (activePin) activePin.classList.add('active');
+
+    // Smooth organic flyTo right down to harbor/runway/street level
+    map.flyTo({
+      center: info.center,
+      zoom: info.zoom,
+      pitch: info.pitch,
+      bearing: info.bearing,
+      duration: 1800,
+      curve: 1.3,
+      essential: true
+    });
+
+    const geo = window.GEO_2026;
+    const node = geo && geo.nodes ? geo.nodes.find(n => n.id === nodeId) : null;
+    if (node) {
+      window.dispatchEvent(new CustomEvent('strategicNodeSelected', { detail: node }));
+    }
+  }
+
+  /**
+   * Select a strategic corridor: highlight line, endpoints, and frame camera
+   */
+  function selectCorridor(corridorId) {
+    if (!map) return;
+    const geo = window.GEO_2026;
+    if (!geo || !geo.corridors) return;
+
+    const corridor = geo.corridors.find(c => c.id === corridorId);
+    if (!corridor) return;
+
+    activeCorridorId = corridorId;
+    activeNodeId = null;
+
+    // Highlight active corridor glow and dim others
+    geo.corridors.forEach(c => {
+      const glowId = `layer-glow-${c.id}`;
+      const coreId = `layer-core-${c.id}`;
+      if (map.getLayer(glowId)) {
+        if (c.id === corridorId) {
+          map.setPaintProperty(glowId, 'line-opacity', 0.95);
+          map.setPaintProperty(glowId, 'line-width', 7.0);
+          map.setPaintProperty(coreId, 'line-width', 2.8);
+        } else {
+          map.setPaintProperty(glowId, 'line-opacity', 0.15);
+          map.setPaintProperty(glowId, 'line-width', 2.5);
+          map.setPaintProperty(coreId, 'line-width', 1.2);
+        }
+      }
+    });
+
+    // Highlight endpoints pins
+    document.querySelectorAll('.tactical-pin').forEach(p => p.classList.remove('active'));
+    if (corridor.endpoints && Array.isArray(corridor.endpoints)) {
+      corridor.endpoints.forEach(epId => {
+        const pin = document.getElementById(`map-pin-${epId}`);
+        if (pin) pin.classList.add('active');
+      });
+    }
+
+    // Fit map bounds to corridor coordinates
+    if (corridor.coordinates && corridor.coordinates.length > 0) {
+      const bounds = new maplibregl.LngLatBounds();
+      corridor.coordinates.forEach(pt => bounds.extend(pt));
+      const isMobile = window.innerWidth < 850;
+      const fitPadding = isMobile
+        ? { top: 70, bottom: 80, left: 24, right: 24 }
+        : { top: 90, bottom: 90, left: 360, right: 380 };
+      map.fitBounds(bounds, {
+        padding: fitPadding,
+        pitch: corridor.category === 'tactical' ? 38 : 25,
+        duration: 1600,
+        maxZoom: corridor.category === 'tactical' ? 10.5 : 6.5
+      });
+    }
+
+    // Dispatch event for UI dossier update
+    window.dispatchEvent(new CustomEvent('strategicCorridorSelected', { detail: corridor }));
+  }
+
+  function resetCorridorGlows() {
+    const geo = window.GEO_2026;
+    if (!map || !geo || !geo.corridors) return;
+
+    geo.corridors.forEach(c => {
+      const glowId = `layer-glow-${c.id}`;
+      const coreId = `layer-core-${c.id}`;
+      if (map.getLayer(glowId)) {
+        map.setPaintProperty(glowId, 'line-opacity', 0.35);
+        map.setPaintProperty(glowId, 'line-width', c.category === 'tactical' ? 4.5 : 3.8);
+        map.setPaintProperty(coreId, 'line-width', c.category === 'tactical' ? 2.4 : 1.8);
+      }
+    });
+  }
+
+  /**
+   * Filter visible corridors on map by category: 'all' | 'sea' | 'air' | 'tactical' | 'transit'
+   */
+  function filterCorridors(category) {
+    const geo = window.GEO_2026;
+    if (!map || !geo || !geo.corridors) return;
+
+    geo.corridors.forEach(c => {
+      const visible = (category === 'all' || c.category === category || (category === 'air' && c.category === 'diplo'));
+      const val = visible ? 'visible' : 'none';
+      if (map.getLayer(`layer-glow-${c.id}`)) map.setLayoutProperty(`layer-glow-${c.id}`, 'visibility', val);
+      if (map.getLayer(`layer-core-${c.id}`)) map.setLayoutProperty(`layer-core-${c.id}`, 'visibility', val);
+      if (map.getLayer(`layer-hit-${c.id}`)) map.setLayoutProperty(`layer-hit-${c.id}`, 'visibility', val);
+    });
+  }
+
+  /**
+   * Switch Basemap Style: 'dark' | 'satellite' | 'streets'
+   */
+  function setBasemap(styleKey) {
+    if (!map) return;
+    currentBasemap = styleKey;
+    map.setLayoutProperty('base-dark', 'visibility', styleKey === 'dark' ? 'visible' : 'none');
+    map.setLayoutProperty('base-satellite', 'visibility', styleKey === 'satellite' ? 'visible' : 'none');
+    map.setLayoutProperty('base-streets', 'visibility', styleKey === 'streets' ? 'visible' : 'none');
+    
+    // In satellite mode, lower territory fills to ensure 100% photorealistic terrain clarity
+    if (map.getLayer('rf-borders-fill')) {
+      map.setPaintProperty('rf-borders-fill', 'fill-opacity', styleKey === 'satellite' ? 0.04 : 0.12);
+    }
+    if (map.getLayer('syria-borders-fill')) {
+      map.setPaintProperty('syria-borders-fill', 'fill-opacity', styleKey === 'satellite' ? 0.08 : 0.18);
+    }
+    return currentBasemap;
+  }
+
+  /**
+   * Set perspective tilt: 45° (3D Oblique) vs 0° (2D Plan)
+   */
+  function setPerspective(pitchAngle) {
+    if (!map) return;
+    map.easeTo({
+      pitch: pitchAngle,
+      duration: 800
+    });
+  }
+
+  function toggleAutoRotate() {
+    if (!map) return false;
+    isRotating = !isRotating;
+
+    if (isRotating) {
+      const rotateCamera = () => {
+        if (!isRotating || !map) return;
+        const currentBearing = map.getBearing();
+        map.setBearing((currentBearing + 0.25) % 360);
+        rotationTimer = requestAnimationFrame(rotateCamera);
+      };
+      rotationTimer = requestAnimationFrame(rotateCamera);
+    } else {
+      if (rotationTimer) cancelAnimationFrame(rotationTimer);
+    }
+
+    return isRotating;
+  }
+
+  // Public Engine API
+  root.GlobeEngine = {
+    init: initEngine,
+    flyToPreset: flyToPreset,
+    selectNode: selectNode,
+    selectCorridor: selectCorridor,
+    filterCorridors: filterCorridors,
+    resetCorridorGlows: resetCorridorGlows,
+    setBasemap: setBasemap,
+    setPerspective: setPerspective,
+    toggleAutoRotate: toggleAutoRotate,
+    resize: () => { if (map) map.resize(); },
+    getNodeInfo: (id) => NODE_LOCATIONS[id],
+    getMap: () => map
+  };
+
+})(window);
+
+</script>
+
+<!-- ═══ COMMAND CENTER HUD CONTROLLER & TOUCH GESTURES ═══ -->
+<script id="inline-dashboard-controller">
+'use strict';
+
+const EPOCH_DATA = [
+  {
+    year: '1944',
+    title: 'Diplomatic Recognition of Syrian Independence',
+    place: 'Damascus, Syria',
+    doc: "Note of USSR People's Commissariat of Foreign Affairs, July 21, 1944",
+    text: "On July 21, 1944, the USSR became the first major global power to recognize the full independence of the Syrian Republic, establishing the foundation of a strategic alliance.",
+    highlights: [
+      { label: 'Legal Status:', val: 'Unconditional recognition prior to expiration of mandate.' },
+      { label: 'Signatories:', val: 'V.M. Molotov (USSR) · Jamil Mardam-Bey (Syrian Foreign Minister).' },
+      { label: 'Outcome:', val: 'Establishment of permanent Soviet diplomatic mission in Damascus.' }
+    ],
+    targetNode: 'damascus'
+  },
+  {
+    year: '1980',
+    title: 'Treaty of Friendship and Cooperation USSR — Syria',
+    place: 'Damascus / Moscow',
+    doc: 'Interstate Treaty USSR — Syria, October 8, 1980',
+    text: 'Signed by L.I. Brezhnev and Hafez al-Assad, this treaty cemented mutual security commitments, legal standing for the 720th Naval Logistics Point in Tartus, and naval parity in the Eastern Mediterranean.',
+    highlights: [
+      { label: 'Article 6:', val: 'Mandatory immediate consultations in case of threats to peace.' },
+      { label: 'Naval Standing:', val: 'Operation of 720th Naval Logistics Point in Tartus.' },
+      { label: 'Strategic Parity:', val: 'Balance of forces across Eastern Mediterranean basin.' }
+    ],
+    targetNode: 'tartus'
+  },
+  {
+    year: '2015',
+    title: 'Counter-Terrorism Mission · Khmeimim Air Base',
+    place: 'Khmeimim Airfield, Jableh / Latakia',
+    doc: 'Federation Council Resolution No. 492 · Agreement of August 26, 2015',
+    text: 'At the request of the Syrian government, Russia deployed an aerospace task force to Khmeimim. The operation liberated 90%+ of Syrian territory and stabilized the state.',
+    highlights: [
+      { label: 'Legal Standing:', val: 'Initially indefinite; 2017 Protocol set 49-yr term + 25-yr renewals.' },
+      { label: 'Air Defense:', val: 'Deployment of S-400 Triumf and Pantsir-S1 missile batteries.' },
+      { label: 'Operational Impact:', val: 'Protection of Syrian state sovereignty and key infrastructure.' }
+    ],
+    targetNode: 'khmeimim'
+  },
+  {
+    year: '2026',
+    title: 'Strategic Axis & Comprehensive Memorandum of 2026',
+    place: 'Moscow ↔ Damascus Axis (2,460 km)',
+    doc: 'Bilateral Memorandum of August 9, 2026',
+    text: 'Established updated operational framework: Tartus and Khmeimim transition to joint training centers while preserving Russian naval and air detachments. Berth #4 and civil airport transferred to Syria; African transit hub status affirmed.',
+    highlights: [
+      { label: 'Center Status:', val: 'Joint Russian-Syrian military training centers.' },
+      { label: 'Military Core:', val: 'Air wing, 720th Logistics Point, and repair workshop preserved.' },
+      { label: 'Civilian Transfer:', val: 'Commercial Berth #4 and civil airport returned to Syria.' },
+      { label: 'Transit Role:', val: 'Strategic staging hub for Russian operations into Africa.' }
+    ],
+    targetNode: 'axis'
+  }
+];
+
+const STAFF_DATABASE = {
+  syria: [
+    { name: 'Abdulrazzak Ismaeel', role: "Counselor · Head of Mission (Charge d'Affaires ad interim)", cat: 'leadership', badge: 'Head of Mission' },
+    { name: 'Zaher Al Ahmar', role: 'Counselor · Consular Section, Syrian Embassy', cat: 'consular', badge: 'Consul' },
+    { name: 'Kinan Saker', role: 'Second Secretary · Political Chancery', cat: 'chancery', badge: 'Secretary' },
+    { name: 'Muhannad Ali', role: 'Attache, Embassy of the Syrian Arab Republic', cat: 'attache', badge: 'Attache' },
+    { name: 'Salah Al Mahamid', role: 'Attache, Embassy of the Syrian Arab Republic', cat: 'attache', badge: 'Attache' },
+    { name: 'Safwan Hussein', role: 'Attache, Embassy of the Syrian Arab Republic', cat: 'attache', badge: 'Attache' }
+  ],
+  russia: [
+    { name: 'Dmitry N. Dogadkin', role: 'Ambassador Extraordinary and Plenipotentiary (Decree No. 533)', cat: 'leadership', badge: 'Ambassador' },
+    { name: 'Evgeny S. Kozlov', role: 'Minister-Counselor · Chancery Head', cat: 'chancery', badge: 'Counselor' },
+    { name: 'Col. Alexey Bodredinov', role: 'Defense, Air, and Naval Attache', cat: 'attache', badge: 'Military Attache' },
+    { name: 'Zaur A. Guseynov', role: 'Counselor · Head of Consular Section', cat: 'consular', badge: 'Consul' }
+  ]
+};
+
+let diploDonutChart = null;
+let strategicPolarChart = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  initDashboard();
+});
+
+function initDashboard() {
+  const isMobile = window.innerWidth < 900;
+  const leftWing = document.getElementById('hud-wing-left');
+  const rightWing = document.getElementById('hud-wing-right');
+  if (isMobile) {
+    if (leftWing) {
+      leftWing.classList.add('closed');
+      leftWing.classList.remove('mobile-open');
+    }
+    if (rightWing) {
+      rightWing.classList.add('closed');
+      rightWing.classList.remove('mobile-open');
+    }
+    checkOrientationAdvisor();
+  }
+
+  // Initialize 3D Globe Engine
+  if (window.GlobeEngine && window.GlobeEngine.init) {
+    window.GlobeEngine.init('globe-canvas-wrap');
+  }
+
+  // Populate Staff Roster & Donut
+  renderStaffList('all');
+  initDiploChart();
+
+  // Populate Corridors List
+  renderCorridorsList('all');
+
+  // Populate Polar Area Strategic Balance Chart
+  initPolarChart();
+
+  // Setup mobile touch gestures (swipe down to dismiss, swipe up to open)
+  setupTouchSwipeGestures();
+
+  // Listen for custom events from map engine
+  window.addEventListener('strategicNodeSelected', (e) => {
+    updateDossier(e.detail);
+    if (typeof isMobileOrLandscape === 'function' && isMobileOrLandscape()) {
+      openWing('left');
+      const tabDossierBtn = document.getElementById('tab-l-dossier');
+      if (tabDossierBtn) switchLeftTab('dossier', tabDossierBtn);
+    }
+  });
+
+  window.addEventListener('strategicCorridorSelected', (e) => {
+    updateCorridorDossier(e.detail);
+    if (typeof isMobileOrLandscape === 'function' && isMobileOrLandscape()) {
+      openWing('left');
+      const tabDossierBtn = document.getElementById('tab-l-dossier');
+      if (tabDossierBtn) switchLeftTab('dossier', tabDossierBtn);
+    }
+  });
+
+  // Default to Tartus
+  const defaultNode = window.GEO_2026 && window.GEO_2026.nodes
+    ? window.GEO_2026.nodes.find(n => n.id === 'tartus')
+    : null;
+  if (defaultNode) {
+    updateDossier(defaultNode);
+  }
+}
+
+/**
+ * Native Touch Swipe Gestures for Mobile Drawers
+ */
+function setupTouchSwipeGestures() {
+  ['left', 'right'].forEach(side => {
+    const wing = document.getElementById(`hud-wing-${side}`);
+    if (!wing) return;
+    let startY = 0;
+    let currentY = 0;
+    let startTime = 0;
+    let isSwiping = false;
+
+    wing.addEventListener('touchstart', (e) => {
+      if (window.innerWidth >= 900) return;
+      const touch = e.touches[0];
+      const rect = wing.getBoundingClientRect();
+      if (touch.clientY - rect.top < 65) {
+        startY = touch.clientY;
+        currentY = startY;
+        startTime = Date.now();
+        isSwiping = true;
+      }
+    }, { passive: true });
+
+    wing.addEventListener('touchmove', (e) => {
+      if (!isSwiping || window.innerWidth >= 900) return;
+      currentY = e.touches[0].clientY;
+      const diff = currentY - startY;
+      if (diff > 0) {
+        wing.style.transform = `translateY(${diff}px)`;
+        wing.style.transition = 'none';
+      }
+    }, { passive: true });
+
+    const onTouchEnd = () => {
+      if (!isSwiping) return;
+      isSwiping = false;
+      const diff = currentY - startY;
+      const dt = Date.now() - startTime;
+      const velocity = diff / (dt || 1);
+      wing.style.transition = '';
+      wing.style.transform = '';
+      if (diff > 70 || velocity > 0.35) {
+        closeWing(side);
+      }
+    };
+
+    wing.addEventListener('touchend', onTouchEnd, { passive: true });
+    wing.addEventListener('touchcancel', onTouchEnd, { passive: true });
+  });
+
+  // Swiping up from bottom dock or mobile action bar opens dossier
+  const bottomDock = document.querySelector('.bottom-chronology-dock');
+  const mobileBar = document.getElementById('mobile-action-bar');
+  let bStartY = 0;
+  [bottomDock, mobileBar].forEach(el => {
+    if (!el) return;
+    el.addEventListener('touchstart', (e) => {
+      bStartY = e.touches[0].clientY;
+    }, { passive: true });
+    el.addEventListener('touchend', (e) => {
+      const endY = e.changedTouches[0].clientY;
+      if (bStartY - endY > 40 && window.innerWidth < 900) {
+        openWing('left');
+      }
+    }, { passive: true });
+  });
+}
+
+function checkOrientationAdvisor() {
+  const isPortrait = window.matchMedia('(orientation: portrait)').matches;
+  const advisor = document.getElementById('orientation-advisor');
+  if (advisor && isPortrait && window.innerWidth < 700) {
+    advisor.classList.add('visible');
+    setTimeout(() => {
+      if (advisor) advisor.classList.remove('visible');
+    }, 7000);
+  }
+}
+
+function dismissOrientationAdvisor() {
+  const advisor = document.getElementById('orientation-advisor');
+  if (advisor) advisor.classList.remove('visible');
+}
+
+/**
+ * Update Left Wing HUD with Target Node Data
+ */
+function updateDossier(node) {
+  if (!node) return;
+  const titleEl = document.getElementById('dossier-title');
+  const subEl = document.getElementById('dossier-sub');
+  const badgeEl = document.getElementById('dossier-badge');
+  const descEl = document.getElementById('dossier-desc');
+  const catEl = document.getElementById('dossier-cat');
+  const coordsEl = document.getElementById('dossier-coords');
+  const unitsBox = document.getElementById('dossier-units-box');
+  const specsBox = document.getElementById('dossier-specs-box');
+
+  const catNames = {
+    naval: 'NAVAL LOGISTICS POINT (720th)',
+    air: 'AEROSPACE TRAINING BASE',
+    oil: 'CRUDE OIL REFINERY & TERMINAL',
+    grain: 'COMMERCIAL GRAIN PORT',
+    capital: 'EMBASSY OF RUSSIAN FEDERATION',
+    transit: 'AFRICAN STRATEGIC LOGISTICS HUB'
+  };
+
+  const locText = node.city || node.country || 'Syria';
+  if (catEl) catEl.textContent = catNames[node.category] || (node.category || '').toUpperCase();
+  if (coordsEl) coordsEl.textContent = `${node.coords[1].toFixed(2)}° N, ${node.coords[0].toFixed(2)}° E`;
+  if (titleEl) titleEl.textContent = node.name;
+  if (subEl) subEl.textContent = `${locText} · Strategic Infrastructure Cluster`;
+  if (badgeEl) badgeEl.textContent = node.mou_role || node.role;
+  if (descEl) descEl.textContent = node.details || '';
+
+  // Render tactical units glyph grid
+  if (unitsBox) {
+    if (node.tactical_units && node.tactical_units.length > 0) {
+      unitsBox.style.display = 'block';
+      let html = '<div class="tub-header">Accredited Tactical Assets & Units:</div><div class="tub-grid">';
+      node.tactical_units.forEach(u => {
+        html += `
+          <div class="tub-item">
+            <span class="tub-glyph">${u.glyph || '⚓'}</span>
+            <div class="tub-text">
+              <div class="tub-code">${u.code}</div>
+              <div class="tub-role" title="${u.role}">${u.role}</div>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      unitsBox.innerHTML = html;
+    } else {
+      unitsBox.style.display = 'none';
+      unitsBox.innerHTML = '';
+    }
+  }
+
+  // Render specifications table
+  if (specsBox) {
+    if (node.specs && node.specs.length > 0) {
+      specsBox.style.display = 'block';
+      let html = '';
+      node.specs.forEach(s => {
+        html += `
+          <div class="dst-row">
+            <span class="dst-key">${s.key}:</span>
+            <span class="dst-val">${s.val}</span>
+          </div>
+        `;
+      });
+      specsBox.innerHTML = html;
+    } else {
+      specsBox.style.display = 'none';
+      specsBox.innerHTML = '';
+    }
+  }
+
+  // Highlight active button in quick jump grid
+  document.querySelectorAll('.dj-btn').forEach(btn => btn.classList.remove('active'));
+  const activeBtn = document.getElementById(`dj-${node.id}`);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  // Switch to dossier tab
+  const tabDossierBtn = document.getElementById('tab-l-dossier');
+  if (tabDossierBtn) switchLeftTab('dossier', tabDossierBtn);
+}
+
+/**
+ * Update Left Wing HUD with Corridor Route Data
+ */
+function updateCorridorDossier(c) {
+  if (!c) return;
+  const catEl = document.getElementById('dossier-cat');
+  const coordsEl = document.getElementById('dossier-coords');
+  const titleEl = document.getElementById('dossier-title');
+  const subEl = document.getElementById('dossier-sub');
+  const badgeEl = document.getElementById('dossier-badge');
+  const descEl = document.getElementById('dossier-desc');
+  const unitsBox = document.getElementById('dossier-units-box');
+  const specsBox = document.getElementById('dossier-specs-box');
+
+  const catNames = {
+    air: 'STRATEGIC AIR BRIDGE',
+    sea: 'MARITIME SHIPPING LANE',
+    tactical: 'COASTAL DEFENSE BELT',
+    transit: 'TRANSCONTINENTAL TRANSIT',
+    diplo: 'SECURE COMMUNICATIONS'
+  };
+
+  if (catEl) catEl.textContent = catNames[c.category] || 'STRATEGIC CORRIDOR';
+  if (coordsEl) coordsEl.textContent = `${c.distance_km.toLocaleString()} km`;
+  if (titleEl) titleEl.textContent = c.name;
+  if (subEl) subEl.textContent = `Route: ${c.from_name} ➔ ${c.to_name}`;
+  if (badgeEl) badgeEl.textContent = c.throughput || 'Operational Strategic Capacity';
+  if (descEl) descEl.textContent = c.description || '';
+
+  // Render route specs
+  if (specsBox) {
+    specsBox.style.display = 'block';
+    specsBox.innerHTML = `
+      <div class="dst-row"><span class="dst-key">Origin:</span><span class="dst-val">${c.from_name}</span></div>
+      <div class="dst-row"><span class="dst-key">Destination:</span><span class="dst-val">${c.to_name}</span></div>
+      <div class="dst-row"><span class="dst-key">Distance:</span><span class="dst-val">${c.distance_km.toLocaleString()} km</span></div>
+      <div class="dst-row"><span class="dst-key">Capacity:</span><span class="dst-val">${c.throughput}</span></div>
+      <div class="dst-row"><span class="dst-key">Legal Accord:</span><span class="dst-val">${c.legal_basis}</span></div>
+    `;
+  }
+
+  if (unitsBox) {
+    unitsBox.style.display = 'none';
+    unitsBox.innerHTML = '';
+  }
+
+  // Highlight corridor card in right wing
+  document.querySelectorAll('.corridor-card').forEach(card => card.classList.remove('active'));
+  const activeCard = document.getElementById(`ccard-${c.id}`);
+  if (activeCard) {
+    activeCard.classList.add('active');
+    activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  const corridorsTabBtn = document.getElementById('tab-r-corridors');
+  if (corridorsTabBtn) switchRightTab('corridors', corridorsTabBtn);
+}
+
+/**
+ * Render Strategic Corridors List
+ */
+function renderCorridorsList(category = 'all') {
+  const container = document.getElementById('corridors-list-box');
+  if (!container) return;
+  const geo = window.GEO_2026;
+  if (!geo || !geo.corridors) return;
+
+  const filtered = category === 'all' 
+    ? geo.corridors 
+    : geo.corridors.filter(c => c.category === category);
+
+  let html = '';
+  filtered.forEach(c => {
+    const catLabel = {
+      air: 'Air Bridge',
+      sea: 'Maritime Lane',
+      tactical: 'Coastal Belt',
+      transit: 'African Vector',
+      diplo: 'Government Link'
+    }[c.category] || c.category;
+
+    html += `
+      <div class="corridor-card" id="ccard-${c.id}" onclick="selectStrategicCorridor('${c.id}')" style="border-left-color:${c.color || '#38bdf8'};">
+        <div class="cc-top">
+          <span class="cc-name">${c.name}</span>
+          <span class="cc-dist">${c.distance_km.toLocaleString()} km</span>
+        </div>
+        <div class="cc-route">${c.from_name} ➔ ${c.to_name} · ${catLabel}</div>
+        <div class="cc-throughput">${c.throughput}</div>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+function filterCorridorsUI(category, btn) {
+  document.querySelectorAll('.cf-pill').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderCorridorsList(category);
+  if (window.GlobeEngine && window.GlobeEngine.filterCorridors) {
+    window.GlobeEngine.filterCorridors(category);
+  }
+}
+
+function selectStrategicCorridor(corridorId) {
+  if (window.GlobeEngine && window.GlobeEngine.selectCorridor) {
+    window.GlobeEngine.selectCorridor(corridorId);
+  }
+  openWing('left');
+}
+
+function showAllCorridors(btn) {
+  document.querySelectorAll('.cpreset-btn').forEach(b => b.classList.remove('active'));
+  const targetBtn = btn || document.getElementById('cp-corridors');
+  if (targetBtn) {
+    targetBtn.classList.add('active');
+    targetBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
+
+  if (window.GlobeEngine && window.GlobeEngine.flyToPreset) {
+    window.GlobeEngine.flyToPreset('corridors');
+    window.GlobeEngine.filterCorridors('all');
+    window.GlobeEngine.resetCorridorGlows();
+  }
+  openWing('right');
+  const tabCorridorsBtn = document.getElementById('tab-r-corridors');
+  if (tabCorridorsBtn) switchRightTab('corridors', tabCorridorsBtn);
+}
+
+/**
+ * Strategic Target Selector with smooth auto-scroll into view
+ */
+function selectStrategicTarget(nodeId, btn) {
+  document.querySelectorAll('.cpreset-btn').forEach(b => b.classList.remove('active'));
+  const targetBtn = btn || document.getElementById(`cp-${nodeId}`);
+  if (targetBtn) {
+    targetBtn.classList.add('active');
+    targetBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
+
+  if (window.GlobeEngine && window.GlobeEngine.selectNode) {
+    window.GlobeEngine.selectNode(nodeId);
+  }
+
+  // On compact viewports (mobile portrait or rotated landscape phone), open the dossier modal sheet
+  if (typeof isMobileOrLandscape === 'function' && isMobileOrLandscape()) {
+    openWing('left');
+    const tabDossierBtn = document.getElementById('tab-l-dossier');
+    if (tabDossierBtn) switchLeftTab('dossier', tabDossierBtn);
+  }
+}
+
+function flyToStrategicPreset(presetKey, btn) {
+  document.querySelectorAll('.cpreset-btn').forEach(b => b.classList.remove('active'));
+  if (btn) {
+    btn.classList.add('active');
+    btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
+
+  if (window.GlobeEngine && window.GlobeEngine.flyToPreset) {
+    window.GlobeEngine.flyToPreset(presetKey);
+  }
+}
+
+/**
+ * Epoch Scrubber Controller
+ */
+function handleEpochScrubber(year, btn) {
+  document.querySelectorAll('.epoch-step-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  const epoch = EPOCH_DATA.find(e => e.year === year);
+  if (!epoch) return;
+
+  const yEl = document.getElementById('arch-year-badge') || document.getElementById('arch-year');
+  const pEl = document.getElementById('arch-place');
+  const tEl = document.getElementById('arch-title');
+  const dEl = document.getElementById('arch-doc');
+  const textEl = document.getElementById('arch-text');
+  const hBox = document.getElementById('arch-highlights-box');
+
+  if (yEl) yEl.textContent = `${epoch.year} EPOCH`;
+  if (pEl) pEl.textContent = epoch.place.toUpperCase();
+  if (tEl) tEl.textContent = epoch.title;
+  if (dEl) dEl.textContent = `OFFICIAL RECORD: ${epoch.doc}`;
+  if (textEl) textEl.textContent = epoch.text;
+
+  if (hBox && epoch.highlights) {
+    let html = '';
+    epoch.highlights.forEach(h => {
+      html += `
+        <div class="dst-row">
+          <span class="dst-key">${h.label}</span>
+          <span class="dst-val">${h.val}</span>
+        </div>
+      `;
+    });
+    hBox.innerHTML = html;
+  }
+
+  const tabChronBtn = document.getElementById('tab-l-chronicle');
+  if (tabChronBtn) switchLeftTab('chronicle', tabChronBtn);
+  openWing('left');
+
+  if (epoch.targetNode === 'axis') {
+    flyToStrategicPreset('axis');
+  } else if (epoch.targetNode) {
+    selectStrategicTarget(epoch.targetNode);
+  }
+}
+
+/**
+ * 3D Perspective Toggle (Fixed-width, zero-jumping)
+ */
+let is3DPerspective = true;
+function toggle3DPerspective(btn) {
+  is3DPerspective = !is3DPerspective;
+  const targetPitch = is3DPerspective ? 45 : 0;
+  if (window.GlobeEngine && window.GlobeEngine.setPerspective) {
+    window.GlobeEngine.setPerspective(targetPitch);
+  }
+  const txt = document.getElementById('txt-proj-toggle');
+  if (txt) {
+    txt.textContent = is3DPerspective ? '3D View' : '2D Map';
+  }
+  const targetBtn = btn || document.getElementById('btn-toggle-proj');
+  if (targetBtn) {
+    targetBtn.classList.toggle('active', is3DPerspective);
+  }
+}
+
+/**
+ * Clean 3D / Pure Map Mode Toggle
+ */
+function toggleClean3DMode(btn) {
+  const isClean = document.body.classList.toggle('clean-3d-active');
+  const targetBtn = btn || document.getElementById('btn-clean-toggle');
+  if (targetBtn) targetBtn.classList.toggle('active', isClean);
+  const span = document.getElementById('txt-clean-toggle');
+  if (span) span.textContent = isClean ? 'Restore HUD' : 'Pure Map';
+
+  if (isClean) {
+    closeAllWings();
+  }
+
+  if (window.GlobeEngine && window.GlobeEngine.resize) {
+    setTimeout(() => window.GlobeEngine.resize(), 100);
+  }
+}
+
+/**
+ * Native Browser Fullscreen (Hides mobile Chrome URL bar & browser tabs)
+ */
+function toggleBrowserFullscreen() {
+  const elem = document.documentElement;
+  const isFull = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+  if (!isFull) {
+    const request = elem.requestFullscreen || elem.webkitRequestFullscreen || elem.mozRequestFullScreen || elem.msRequestFullscreen;
+    if (request) {
+      request.call(elem).catch(() => {});
+    }
+  } else {
+    const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+    if (exit) {
+      exit.call(document).catch(() => {});
+    }
+  }
+  const btn = document.getElementById('btn-fullscreen-toggle');
+  if (btn) btn.classList.toggle('active', !isFull);
+  if (window.GlobeEngine && window.GlobeEngine.resize) {
+    setTimeout(() => window.GlobeEngine.resize(), 150);
+  }
+}
+
+/**
+ * Basemap Style Switcher
+ */
+function setBasemapStyle(styleKey, btn) {
+  document.querySelectorAll('.bmp-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  if (window.GlobeEngine && window.GlobeEngine.setBasemap) {
+    window.GlobeEngine.setBasemap(styleKey);
+  }
+}
+
+/**
+ * Tabs & HUD Wing Visibility
+ */
+function switchLeftTab(tabId, btn) {
+  document.querySelectorAll('#hud-wing-left .wtab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#hud-wing-left .tab-pane').forEach(p => p.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const pane = document.getElementById(`pane-l-${tabId}`);
+  if (pane) pane.classList.add('active');
+}
+
+function switchRightTab(tabId, btn) {
+  document.querySelectorAll('#hud-wing-right .wtab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#hud-wing-right .tab-pane').forEach(p => p.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const pane = document.getElementById(`pane-r-${tabId}`);
+  if (pane) pane.classList.add('active');
+}
+
+/**
+ * Viewport Helper: Mobile Portrait or Rotated Landscape Smartphone
+ */
+function isMobileOrLandscape() {
+  return window.innerWidth < 900 || (window.innerHeight < 550 && window.innerWidth > window.innerHeight);
+}
+
+function openWing(side) {
+  const isCompact = isMobileOrLandscape();
+  if (isCompact) {
+    const otherSide = side === 'left' ? 'right' : 'left';
+    const otherWing = document.getElementById(`hud-wing-${otherSide}`);
+    if (otherWing) {
+      otherWing.classList.add('closed');
+      otherWing.classList.remove('mobile-open');
+    }
+    const wing = document.getElementById(`hud-wing-${side}`);
+    if (wing) {
+      wing.classList.remove('closed');
+      wing.classList.add('mobile-open');
+    }
+  } else {
+    const wing = document.getElementById(`hud-wing-${side}`);
+    if (wing) wing.classList.remove('closed');
+  }
+  updateBackdrop();
+}
+
+function closeWing(side) {
+  const wing = document.getElementById(`hud-wing-${side}`);
+  if (wing) {
+    wing.classList.add('closed');
+    wing.classList.remove('mobile-open');
+  }
+  updateBackdrop();
+}
+
+function toggleWing(side) {
+  const wing = document.getElementById(`hud-wing-${side}`);
+  if (!wing) return;
+  const isCompact = isMobileOrLandscape();
+  if (isCompact) {
+    if (wing.classList.contains('mobile-open') && !wing.classList.contains('closed')) {
+      closeWing(side);
+    } else {
+      openWing(side);
+    }
+  } else {
+    if (wing.classList.contains('closed')) {
+      openWing(side);
+    } else {
+      closeWing(side);
+    }
+  }
+}
+
+function closeAllWings() {
+  closeWing('left');
+  closeWing('right');
+}
+
+function updateBackdrop() {
+  const backdrop = document.getElementById('hud-backdrop');
+  if (!backdrop) return;
+  const isCompact = isMobileOrLandscape();
+  if (!isCompact) {
+    backdrop.classList.remove('active');
+    return;
+  }
+  const leftOpen = document.getElementById('hud-wing-left') && document.getElementById('hud-wing-left').classList.contains('mobile-open') && !document.getElementById('hud-wing-left').classList.contains('closed');
+  const rightOpen = document.getElementById('hud-wing-right') && document.getElementById('hud-wing-right').classList.contains('mobile-open') && !document.getElementById('hud-wing-right').classList.contains('closed');
+  if (leftOpen || rightOpen) {
+    backdrop.classList.add('active');
+  } else {
+    backdrop.classList.remove('active');
+  }
+}
+
+/**
+ * Staff Roster & Donut Chart
+ */
+function renderStaffList(filter = 'all') {
+  const container = document.getElementById('staff-roster-box') || document.getElementById('staff-roster-list');
+  if (!container) return;
+
+  let staffList = [];
+  if (filter === 'all' || filter === 'syria') {
+    staffList = staffList.concat(STAFF_DATABASE.syria.map(s => ({ ...s, country: 'Syria' })));
+  }
+  if (filter === 'all' || filter === 'russia') {
+    staffList = staffList.concat(STAFF_DATABASE.russia.map(s => ({ ...s, country: 'Russia' })));
+  }
+
+  let html = '';
+  staffList.forEach(s => {
+    html += `
+      <div class="staff-item">
+        <div>
+          <div class="si-name">${s.name}</div>
+          <div class="si-role">${s.role}</div>
+        </div>
+        <span class="si-badge" style="color:${s.country === 'Syria' ? '#34d399' : '#38bdf8'}; background:${s.country === 'Syria' ? 'rgba(52, 211, 153, 0.15)' : 'rgba(56, 189, 248, 0.15)'};">${s.badge}</span>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+function filterStaffList(filter, btn) {
+  document.querySelectorAll('.sfb-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderStaffList(filter);
+}
+
+function initDiploChart() {
+  const canvas = document.getElementById('chart-diplo-donut');
+  if (!canvas || typeof Chart === 'undefined') return;
+
+  if (diploDonutChart) diploDonutChart.destroy();
+
+  diploDonutChart = new Chart(canvas, {
+    type: 'doughnut',
+    data: {
+      labels: ['Syrian Embassy (Moscow)', 'Russian Embassy (Damascus)'],
+      datasets: [{
+        data: [6, 4],
+        backgroundColor: ['#34d399', '#38bdf8'],
+        borderColor: '#0a1124',
+        borderWidth: 2,
+        hoverOffset: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            color: '#cbd5e1',
+            font: { family: 'Inter', size: 11, weight: '600' },
+            boxWidth: 12,
+            padding: 8
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(3, 6, 17, 0.95)',
+          titleColor: '#fff',
+          bodyColor: '#cbd5e1',
+          borderColor: 'rgba(255, 255, 255, 0.15)',
+          borderWidth: 1,
+          padding: 8
+        }
+      },
+      cutout: '68%'
+    }
+  });
+}
+
+function initPolarChart() {
+  const canvas = document.getElementById('chart-strategic-polar');
+  if (!canvas || typeof Chart === 'undefined') return;
+
+  if (strategicPolarChart) strategicPolarChart.destroy();
+
+  strategicPolarChart = new Chart(canvas, {
+    type: 'polarArea',
+    data: {
+      labels: [
+        'Naval Logistics',
+        'Air Defense',
+        'Crude Energy',
+        'Grain Express',
+        'African Hub',
+        'Diplomatic'
+      ],
+      datasets: [{
+        data: [95, 98, 92, 90, 85, 96],
+        backgroundColor: [
+          'rgba(56, 189, 248, 0.5)',
+          'rgba(248, 113, 113, 0.5)',
+          'rgba(16, 185, 129, 0.5)',
+          'rgba(52, 211, 153, 0.5)',
+          'rgba(249, 115, 22, 0.5)',
+          'rgba(192, 132, 252, 0.5)'
+        ],
+        borderColor: 'rgba(255, 255, 255, 0.2)',
+        borderWidth: 1.5
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        r: {
+          angleLines: { color: 'rgba(255, 255, 255, 0.08)' },
+          grid: { color: 'rgba(255, 255, 255, 0.08)' },
+          pointLabels: {
+            color: '#cbd5e1',
+            font: { family: 'Inter', size: 10, weight: '600' }
+          },
+          ticks: { display: false, max: 100 }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(3, 6, 17, 0.95)',
+          titleColor: '#fff',
+          bodyColor: '#cbd5e1',
+          borderColor: 'rgba(255, 255, 255, 0.15)',
+          borderWidth: 1,
+          padding: 8
+        }
+      }
+    }
+  });
+}
+
+// Global exports for inline HTML event handlers
+window.selectStrategicTarget = selectStrategicTarget;
+window.selectStrategicCorridor = selectStrategicCorridor;
+window.showAllCorridors = showAllCorridors;
+window.filterCorridors = filterCorridorsUI;
+window.handleEpochScrubber = handleEpochScrubber;
+window.toggle3DPerspective = toggle3DPerspective;
+window.toggleClean3DMode = toggleClean3DMode;
+window.toggleBrowserFullscreen = toggleBrowserFullscreen;
+window.isMobileOrLandscape = isMobileOrLandscape;
+window.setBasemapStyle = setBasemapStyle;
+window.switchLeftTab = switchLeftTab;
+window.switchRightTab = switchRightTab;
+window.openWing = openWing;
+window.closeWing = closeWing;
+window.toggleWing = toggleWing;
+window.closeAllWings = closeAllWings;
+window.filterStaffList = filterStaffList;
+window.dismissOrientationAdvisor = dismissOrientationAdvisor;
+window.updateDossier = updateDossier;
+window.updateCorridorDossier = updateCorridorDossier;
+</script>
+</body>
+</html>
