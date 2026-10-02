@@ -7,7 +7,7 @@ Interactive 3D Geospatial Command Platform visualizing sovereign geopolitical bo
 
 ## 🌐 Live Web Deployment (GitHub Pages)
 Open the live dashboard directly in any browser (desktop, tablet, or smartphone):
-- **Live URL**: `https://<YOUR-GITHUB-USERNAME>.github.io/<YOUR-REPO-NAME>/`
+- **Live URL**: `https://Griendl.github.io/russia-syria-command-center/`
 
 ---
 
